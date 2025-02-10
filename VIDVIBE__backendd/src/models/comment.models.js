@@ -1,0 +1,34 @@
+
+// comments [icon: comment] {
+//   id string pk
+//   video ObjectId videos
+//   owner ObjectId users
+//   content string
+//   createdAt Date
+//   updatedAt Date
+// }
+
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import mongoose , {Schema} from "mongoose"
+
+const commentsSchema = new Schema(
+  {
+    video: {
+      type: Schema.Types.ObjectId,
+      ref: "Video",
+    },
+    content: {
+      type: String,
+      required:true
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    }
+  },
+  {
+    timestamps: true,
+  }
+);
+commentsSchema.plugin(mongooseAggregatePaginate);
+export const Comment = mongoose.model("Comment", commentsSchema);
