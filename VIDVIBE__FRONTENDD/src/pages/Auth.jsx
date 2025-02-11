@@ -1,7 +1,7 @@
 import "./Auth.css";
 import logo from "../assets/logo.jpg";
-import {Register}  from "../components/auth/Register.jsx";
-import { Login } from "../components/auth/Login.jsx";
+// import {Register}  from "../components/auth/Register.jsx";
+// import { Login } from "../components/auth/Login.jsx";
 import {useState} from "react";
 
 export default function Auth() {
@@ -37,7 +37,7 @@ export default function Auth() {
             {isRegister ? "CREATE ACCOUNT" : "LOGIN TO ACCOUNT"}
           </h2>
         </div>
-        {isRegister ? <Register /> : <Login />}
+        {/* {isRegister ? <Register /> : <Login />} */}
         <div className="acc_exist">
           <p className="para"> {isRegister?`Already have an account?`:"Don't have an account?"}</p>
           <a href="#" onClick={isRegister?login:signup} className="link-para">

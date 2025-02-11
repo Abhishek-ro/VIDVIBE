@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "install": "^0.13.0",
+    "npm": "^11.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.5",
     "vidvibe-frontendd": "file:"
   },
   "devDependencies": {
