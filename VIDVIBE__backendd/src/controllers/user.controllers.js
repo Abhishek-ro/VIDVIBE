@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import { APIERROR } from "../utils/APIError.js";
 import { API } from "../utils/APIResponses.js";
@@ -21,7 +22,7 @@ const generateAccessAndRefreshToken = async (userId) => {
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
   } catch (error) {
-    throw new APIERROR(500, "Something went wrong while generating tokens!!!");
+    throw new APIERROR(500, "Something went wrong while generating tokens!!!",error);
   }
 };
 
@@ -41,13 +42,11 @@ const registerUser = asyncHandler(async (req, res) => {
     $or: [{ username }, { email }],
   });
 
-
   if (existedUser) {
     deleteFileFromLocalPath(req.files?.avatar?.[0]?.path);
     deleteFileFromLocalPath(req.files?.coverImage?.[0]?.path);
     throw new APIERROR(403, "User Already Exist!!!");
   }
-
 
   const avatarLocalPath = req.files?.avatar?.[0]?.path;
   const coverLocalPath = req.files?.coverImage?.[0]?.path;
@@ -59,14 +58,13 @@ const registerUser = asyncHandler(async (req, res) => {
   try {
     avatar = await uploadOnCloudinary(avatarLocalPath);
   } catch (error) {
-    throw new APIERROR(500, "Something went Wrong while uploading Avatar!!!");
+    throw new APIERROR(500, "Something went Wrong while uploading Avatar!!!",error);
   }
 
   let coverImage = "";
   if (coverLocalPath) {
     coverImage = await uploadOnCloudinary(coverLocalPath);
   }
-
 
   try {
     const user = await User.create({
@@ -114,7 +112,7 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!user._id) {
     throw new APIERROR(404, "User does not exist");
   }
-  
+
   if (!user || !(await user.isPasswordCorrect(password)))
     throw new APIERROR(401, "Invalid Credentials!!!");
 
