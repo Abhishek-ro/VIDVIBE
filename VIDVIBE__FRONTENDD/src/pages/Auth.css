@@ -82,10 +82,13 @@
   background-color: #1f1f1f;
 }
 
-.logo{
-  height: 60%;
-  border-radius: 50%;
+.logo {
+  width: 60px;        
+  height: 60px;       
+  border-radius: 50%; 
+  object-fit: cover;  
 }
+
 
 .brandName{
   font-family: 'Courier New', Courier, monospace;
