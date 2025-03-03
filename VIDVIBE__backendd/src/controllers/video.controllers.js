@@ -10,45 +10,48 @@ import {
 import path from "path";
 
 const getAllVideos = asyncHandler(async (req, res) => {
-  const {
-    offset = 0,
-    limit = 8,
-    query,
-    sortBy = "createdAt",
-    sortType = "desc",
-    userId,
-  } = req.query;
-
-  const matchStage = {};
-  if (query) {
-    matchStage.title = { $regex: query, $options: "i" };
-  }
-  if (userId) {
-    matchStage.owner = userId;
-  }
-
-  const sortStage = {};
-  sortStage[sortBy] = sortType === "asc" ? 1 : -1;
-
   try {
-    const pipeline = [
-      { $match: matchStage },
-      { $sort: sortStage },
-      { $skip: parseInt(offset) },
-      { $limit: parseInt(limit) },
-    ];
+    const {
+      offset,
+      limit,
+      sortBy = "createdAt",
+      sortType = "desc",
+    } = req.query;
+    console.log(req.query);
 
-    const videos = await Video.aggregate(pipeline); // Execute the aggregation pipeline
-    const totalVideos = await Video.countDocuments(matchStage); // Count the total videos matching the criteria
+    const videos = await Video.find({})
+      .sort({ [sortBy]: sortType === "asc" ? 1 : -1 }) 
+      .skip(parseInt(offset)) 
+      .limit(parseInt(limit)); 
 
+    const totalVideos = await Video.countDocuments();
     res.status(200).json({
       success: true,
       videos,
-      hasMore: offset + limit < totalVideos,
+      hasMore: offset + limit < totalVideos, 
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching videos" });
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching videos", error });
   }
+});
+
+
+
+const getAllHomeVideo= asyncHandler(async (req, res) => {
+  try {
+    const videos = await Video.find({isPublished:true})
+    res.status(200).json({
+      success: true,
+      videos,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching videos", error });
+  }
+  
 });
 
 const publishAVideo = asyncHandler(async (req, res, next) => {
@@ -117,17 +120,17 @@ const publishAVideo = asyncHandler(async (req, res, next) => {
     const thumbnailPath = req.files?.thumbnail?.[0]?.path;
     if (videoPath) await deleteFromCloudinary(videoPath);
     if (thumbnailPath) await deleteFromCloudinary(thumbnailPath);
-    next(new APIERROR(401, "Cannot publish the video!"));
+    next(new APIERROR(401, "Cannot publish the video!",error));
   }
 });
 
-const getVideoById = asyncHandler(async (req, res) => {
+const getVideoById = asyncHandler(async (req, res,next) => {
   const { videoId } = req.params;
-  //TODO: get video by id
+
   const video = await Video.findById(videoId);
-  if (!video) {
-    return next(new APIERROR(404, "Video not found"));
-  }
+
+  if (!video) return next(new APIERROR(404, "Video not found"));
+
   res.status(200).json(new API(200, "Video found", { video }));
 });
 
@@ -228,4 +231,5 @@ export {
   updateVideo,
   deleteVideo,
   togglePublishStatus,
+  getAllHomeVideo,
 };

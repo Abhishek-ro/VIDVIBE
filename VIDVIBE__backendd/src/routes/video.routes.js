@@ -8,11 +8,13 @@ import {
   updateVideo,
   deleteVideo,
   togglePublishStatus,
+  getAllHomeVideo,
 } from "../controllers/video.controllers.js";
 
 const router = Router();
 
 router.use(verifyJWT);
+router.route("/get-all-home").get(getAllHomeVideo);
 router.route("/get-all").get(getAllVideos)
 router.route("/get/:videoId").get(getVideoById)
 router.route("/update/:videoId").put(updateVideo)

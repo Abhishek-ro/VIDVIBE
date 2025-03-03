@@ -1,4 +1,5 @@
-import "./Home.css"
+import "./Home.css";
+import { VideosList } from "./AllVideo.jsx";
 function Home() {
   return (
     <>
@@ -15,6 +16,11 @@ function Home() {
           <img src="./src/assets/user.png" alt="user-Profile" />
           <span>You</span>
         </div>
+      </div>
+      <div>
+        <h1 className="content">
+          <VideosList />
+        </h1>
       </div>
     </>
   );

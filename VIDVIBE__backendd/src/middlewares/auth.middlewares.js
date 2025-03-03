@@ -11,6 +11,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
     console.log(token);
     if (!token) throw new APIERROR(401, "UnAuthorized!!!");
 
+    // eslint-disable-next-line no-undef
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     console.log(decodedToken);
     const user = await User.findById(decodedToken?._id)

@@ -10,6 +10,7 @@ import {
   updateUserCoverImage,
   getUserChannelProfile,
   getWatchHistory,
+  getUsernameById,
 } from "../controllers/user.controllers.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middlewares.js";
@@ -33,6 +34,7 @@ router.route("/register").post(
 
 
 
+router.route("/getUsernameById/:id").get(getUsernameById);
 router.route("/login").post(loginUser);
 router.route("/refresh-access-token").post(refreshAccessToken);
 router.route("/channel-profile/:username").get(getUserChannelProfile);

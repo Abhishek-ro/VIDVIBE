@@ -2,11 +2,11 @@ import "../../pages/Auth.css";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../https/index.js";
-import {enqueueSnackbar} from "notistack"
-import {useNavigate} from "react-router-dom"
-export const Login = () => {
+import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
-  const navigate = useNavigate()
+export const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -20,22 +20,30 @@ export const Login = () => {
   const loginMutation = useMutation({
     mutationFn: (reqData) => login(reqData),
     onSuccess: (res) => {
-      const { user } = res.data.data;
-      console.log(user);
+      const {  accessToken } = res.data.data;
 
-      navigate("/")
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+        enqueueSnackbar("Login Successful!", { variant: "success" });
+        navigate("/");
+      } else {
+        enqueueSnackbar("Login failed! No token received.", {
+          variant: "error",
+        });
+      }
     },
     onError: (err) => {
-      const {response}=err;
-      console.log("SOMETHINGS WRONG!!!")
-      enqueueSnackbar(response.data.message,{variant:"error"})
-    }
+      console.log("SOMETHING'S WRONG!!!");
+      const errorMessage =
+        err.response?.data?.message || "Login failed! Please try again.";
+      enqueueSnackbar(errorMessage, { variant: "error" });
+    },
   });
 
-   const handleSubmit = (e) => {
-     e.preventDefault();
-     loginMutation.mutate(formData);
-   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    loginMutation.mutate(formData);
+  };
 
   return (
     <div>
@@ -75,7 +83,9 @@ export const Login = () => {
           </div>
 
           <br />
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loginMutation.isPending}>
+            {loginMutation.isPending ? "Logging in..." : "Login"}
+          </button>
         </div>
       </form>
     </div>

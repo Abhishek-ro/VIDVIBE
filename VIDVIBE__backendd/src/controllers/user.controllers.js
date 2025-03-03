@@ -416,6 +416,23 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     );
 });
 
+// get username by its id
+
+const getUsernameById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) throw new APIERROR(400, "User Id is Required!!!");
+
+  const user = await User.findById(id);
+  if (!user) throw new APIERROR(404, "User Not Found!!!");
+
+  console.log(user.username);
+
+  res.status(200).json({ username: user.username }); 
+});
+
+
+
 export {
   registerUser,
   loginUser,
@@ -428,6 +445,7 @@ export {
   updateUserCoverImage,
   getUserChannelProfile,
   getWatchHistory,
+  getUsernameById,
 };
 
 /*
