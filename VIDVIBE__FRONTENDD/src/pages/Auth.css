@@ -3,75 +3,70 @@
 .input-label input:-webkit-autofill:focus,
 .input-label input:-webkit-autofill:active {
   background-color: transparent !important;
-  color: white !important; 
-  -webkit-text-fill-color: white !important; 
-  transition: background-color 5000s ease-in-out 0s; 
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
-
-*{
+* {
   margin: 0px;
   padding: 0px;
-  color:#ababab;
+  color: #ababab;
 }
 
-.Auth_main{
+.Auth_main {
   display: flex;
-  min-height:100Vh;;
+  height: 100vh;
   background-color: #fff;
 }
 .left_main_image_div {
-  
   height: 100vh;
   width: 50%;
-  background-image: url("../assets/LEFT_IMG.jpg"); 
-  background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat; 
+  background-image: url("../assets/LEFT_IMG.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .black_overlayer {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0,0.7); 
-    width: inherit;
-    z-index: 1
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: inherit;
+  z-index: 1;
 }
 .auth_quote {
   z-index: 2;
   position: absolute;
   top: 85%;
-  left:2%;
+  left: 2%;
   width: inherit;
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-  width: 80%;
-  color:white
+  color: white;
 }
 
-.quote_owner{
+.quote_owner {
   z-index: 2;
   position: absolute;
   margin-top: 1%;
-  left:4%;
+  left: 4%;
   width: inherit;
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-  width: 15%;
-  color:whitesmoke
+  color: whitesmoke;
 }
 
-
-.right_side_auth{
+.right_side_auth {
   min-height: 100vh;
   max-height: 100vh;
   width: 50%;
   background-color: #1a1a1a;
 }
 
-.logo_col{
+.logo_col {
   height: 15%;
   padding-top: 10px;
   display: flex;
@@ -83,63 +78,57 @@
 }
 
 .logo {
-  width: 60px;        
-  height: 60px;       
-  border-radius: 50%; 
-  object-fit: cover;  
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-
-.brandName{
-  font-family: 'Courier New', Courier, monospace;
+.brandName {
+  font-family: "Courier New", Courier, monospace;
   font-weight: 700;
-  color:#f5f5f5;
+  color: #f5f5f5;
   margin-top: 1%;
 }
 
-
-.register_user_title{
+.register_user_title {
   width: inherit;
   text-align: center;
-  color:#f5f5f5;
+  color: #f5f5f5;
   margin-top: 3%;
   font-size: 40px;
-  
 }
 
-.para{
-  color:#ababab;
-  
+.para {
+  color: #ababab;
 }
 .acc_exist > a {
-  text-decoration:none;
-  
+  text-decoration: none;
 }
 
-.acc_exist > a:hover{
-  text-decoration:underline
+.acc_exist > a:hover {
+  text-decoration: underline;
 }
 
-.acc_exist{
+.acc_exist {
   display: flex;
-  justify-content:center;
-  gap:6px;
+  justify-content: center;
+  gap: 6px;
   font-size: 1.1rem;
 }
 
-.link-para{
-  color:rgba(255, 255, 0, 0.4)
+.link-para {
+  color: rgba(255, 255, 0, 0.4);
 }
 .all-input-box {
-  min-height:inherit;
+  min-height: inherit;
   padding-top: 5%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  height: inherit; 
-  overflow: hidden; 
-  
+  height: inherit;
+  overflow: hidden;
 }
 
 .label-name {
@@ -155,7 +144,7 @@
   display: flex;
   align-items: center;
   width: 80%;
-  max-width: 400px; 
+  max-width: 400px;
   border-radius: 8px;
   padding: 10px;
   background-color: #1f1f1f;
@@ -171,7 +160,6 @@
   font-size: 16px;
   padding: 8px;
 }
-
 
 button {
   padding: 10px 20px;

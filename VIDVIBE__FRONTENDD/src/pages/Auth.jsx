@@ -1,5 +1,5 @@
 import "./Auth.css";
-import logo from "../assets/logo_1.png";
+import logo from "../assets/logo.png";
 import {Register}  from "../components/auth/Register.jsx";
 import { Login } from "../components/auth/Login.jsx";
 import {useState} from "react";

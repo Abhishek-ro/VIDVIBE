@@ -11,6 +11,7 @@ import {
   getUserChannelProfile,
   getWatchHistory,
   getUsernameById,
+  getUserVideos,
 } from "../controllers/user.controllers.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middlewares.js";
@@ -56,4 +57,6 @@ router.route("/update-user-cover-image").post(
   updateUserCoverImage
 );
 router.route("/watch-history").get(verifyJWT, getWatchHistory); 
+
+router.route("/user-videos").get(verifyJWT, getUserVideos);
 export default router

@@ -9,17 +9,27 @@ import {
   deleteVideo,
   togglePublishStatus,
   getAllHomeVideo,
+  fetchSubscriptionVideos,
 } from "../controllers/video.controllers.js";
+import { addView, getTotalViews } from "../controllers/views.controllers.js";
 
 const router = Router();
 
 router.use(verifyJWT);
+
 router.route("/get-all-home").get(getAllHomeVideo);
-router.route("/get-all").get(getAllVideos)
-router.route("/get/:videoId").get(getVideoById)
-router.route("/update/:videoId").put(updateVideo)
-router.route("/delete/:videoId").delete(deleteVideo)
-router.route("/toggle-publish-status/:videoId").put(togglePublishStatus)
+router.route("/get-all").get(getAllVideos);
+
+
+router.route("/get/:videoId").get(getVideoById);
+router.route("/add-view/:videoId").post(addView);
+router.route("/update/:videoId").put(updateVideo);
+router.route("/delete/:videoId").delete(deleteVideo);
+router.route("/toggle-publish-status/:videoId").put(togglePublishStatus);
+
+router.route("/subscribed/videos").get(fetchSubscriptionVideos);
+router.route("/views/:videoId").post(getTotalViews);
+
 router.route("/publish").post(
   verifyJWT,
   upload.fields([
@@ -34,4 +44,5 @@ router.route("/publish").post(
   ]),
   publishAVideo
 );
-export default router
+
+export default router;

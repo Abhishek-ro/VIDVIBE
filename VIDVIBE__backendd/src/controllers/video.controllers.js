@@ -2,12 +2,15 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 import { Video } from "../models/video.models.js";
 import { API } from "../utils/APIResponses.js";
 import { APIERROR } from "../utils/APIError.js";
-
+import { Subscription } from "../models/subscription.models.js";
+import {WatchHistory} from "../models/watch_history.models.js";
 import {
   uploadOnCloudinary,
   deleteFromCloudinary,
 } from "../utils/cloudinary.js";
+import { deleteFileFromLocalPath } from "../middlewares/multer.middlewares.js";
 import path from "path";
+
 
 const getAllVideos = asyncHandler(async (req, res) => {
   try {
@@ -17,8 +20,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
       sortBy = "createdAt",
       sortType = "desc",
     } = req.query;
-    console.log(req.query);
-
+  
+    
     const videos = await Video.find({})
       .sort({ [sortBy]: sortType === "asc" ? 1 : -1 }) 
       .skip(parseInt(offset)) 
@@ -41,11 +44,13 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
 const getAllHomeVideo= asyncHandler(async (req, res) => {
   try {
+    console.log("heeeeeeeeeeeeeeeeeeeeeeeee", req.user.username);
     const videos = await Video.find({isPublished:true})
     res.status(200).json({
       success: true,
       videos,
     });
+  
   } catch (error) {
     res
       .status(500)
@@ -55,7 +60,7 @@ const getAllHomeVideo= asyncHandler(async (req, res) => {
 });
 
 const publishAVideo = asyncHandler(async (req, res, next) => {
-  console.log(req.files);
+  
 
   try {
     const { title, description } = req.body;
@@ -68,8 +73,10 @@ const publishAVideo = asyncHandler(async (req, res, next) => {
     // Validate files
     const videoFile = req.files?.videoFile?.[0];
     const thumbnailFile = req.files?.thumbnail?.[0];
-    console.log(videoFile, thumbnailFile);
+    
     if (!videoFile || !thumbnailFile) {
+      deleteFileFromLocalPath(videoFile?.path);
+      deleteFileFromLocalPath(thumbnailFile?.path);
       return next(new APIERROR(402, "Video and thumbnail files are required."));
     }
 
@@ -77,6 +84,9 @@ const publishAVideo = asyncHandler(async (req, res, next) => {
     const allowedExtensions = [".mp4", ".mkv", ".webm", ".avi"];
     const videoExtension = path.extname(videoFile.path);
     if (!allowedExtensions.includes(videoExtension)) {
+      deleteFileFromLocalPath(videoFile.path);
+      deleteFileFromLocalPath(thumbnailFile.path);
+      await deleteFromCloudinary(thumbnailFile.path);
       await deleteFromCloudinary(videoFile.path);
       return next(
         new APIERROR(400, `Invalid video file type: ${videoExtension}`)
@@ -85,12 +95,18 @@ const publishAVideo = asyncHandler(async (req, res, next) => {
 
     if (!videoFile.mimetype.startsWith("video/")) {
       await deleteFromCloudinary(videoFile.path);
+      await deleteFromCloudinary(thumbnailFile.path);
+      deleteFileFromLocalPath(videoFile.path);
+      deleteFileFromLocalPath(thumbnailFile.path);
       return next(new APIERROR(400, "Uploaded file is not a valid video."));
     }
 
     const thumbnailUrl = await uploadOnCloudinary(thumbnailFile.path);
     if (!thumbnailUrl) {
       await deleteFromCloudinary(thumbnailFile.path);
+      await deleteFromCloudinary(videoFile.path);
+      deleteFileFromLocalPath(videoFile.path);
+      deleteFileFromLocalPath(thumbnailFile.path);
       return next(new APIERROR(402, "Thumbnail upload failed."));
     }
 
@@ -109,30 +125,67 @@ const publishAVideo = asyncHandler(async (req, res, next) => {
       thumbnail: thumbnailUrl.url,
       videoFile: videoUrl.url,
       owner: req.user._id,
+      more:[req.user.username, req.user.avatar],
       duration,
     });
 
     await newVideo.save({ validateBeforeSave: false });
-
+    deleteFileFromLocalPath(videoFile.path);
+    deleteFileFromLocalPath(thumbnailFile.path);
     res.status(201).json(new API(201, "Video Published", { newVideo }));
   } catch (error) {
     const videoPath = req.files?.videoFile?.[0]?.path;
     const thumbnailPath = req.files?.thumbnail?.[0]?.path;
+    deleteFileFromLocalPath(videoPath);
+    deleteFileFromLocalPath(thumbnailPath);
     if (videoPath) await deleteFromCloudinary(videoPath);
     if (thumbnailPath) await deleteFromCloudinary(thumbnailPath);
     next(new APIERROR(401, "Cannot publish the video!",error));
   }
 });
 
-const getVideoById = asyncHandler(async (req, res,next) => {
+const getVideoById = asyncHandler(async (req, res, next) => {
   const { videoId } = req.params;
+  const userId = req?.user?.id;
 
+  if (!userId) return next(new APIERROR(401, "Unauthorized Access!!!"));
+
+  // Find the video
   const video = await Video.findById(videoId);
-
   if (!video) return next(new APIERROR(404, "Video not found"));
 
-  res.status(200).json(new API(200, "Video found", { video }));
+  // Find or create the user's watch history
+  let watchHistory = await WatchHistory.findOne({ user: userId });
+
+  if (!watchHistory) {
+    watchHistory = new WatchHistory({ user: userId, videos: [] });
+  }
+
+  // Find the index of the video if it exists
+  const existingIndex = watchHistory.videos.findIndex(
+    (v) => v.video.toString() === videoId
+  );
+
+  if (existingIndex !== -1) {
+    // If video exists, remove it from its current position
+    const [existingVideo] = watchHistory.videos.splice(existingIndex, 1);
+    // Shift it to the front
+    watchHistory.videos.unshift(existingVideo);
+  } else {
+    // If video does not exist, add it to the front
+    watchHistory.videos.unshift({ video: videoId, watchedAt: new Date() });
+  }
+
+  // Save the updated history
+  await watchHistory.save();
+
+  res
+    .status(200)
+    .json(new API(200, "Video found and watch history updated", { video }));
 });
+
+
+
 
 const updateVideo = asyncHandler(async (req, res, next) => {
   const { videoId } = req.params;
@@ -224,6 +277,51 @@ const togglePublishStatus = asyncHandler(async (req, res, next) => {
   res.status(200).json(new API(200, "Video publish status updated", { video }));
 });
 
+const fetchSubscriptionVideos = asyncHandler(async (req, res) => {
+  try {
+    const { offset = 0, limit = 16 } = req.query;
+    const userId = req?.user?.id;
+
+    // Fetch subscribed channels
+    const subscriptions = await Subscription.find({ subscriber: userId })
+      .populate("channel")
+      .lean(); // Improves performance by returning plain objects
+
+    if (!subscriptions.length) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+        message: "No subscribed channels found.",
+      });
+    }
+
+    // Extract channel IDs
+    const channelIds = subscriptions.map((sub) => sub.channel._id);
+
+    // Fetch videos from subscribed channels with pagination
+    const videos = await Video.find({ owner: { $in: channelIds } })
+      .sort({ createdAt: -1 })
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .lean(); // Optimizes response time
+      
+    res.status(200).json({
+      success: true,
+      data: videos,
+    });
+  } catch (error) {
+    console.error("Error fetching subscription videos:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching subscription videos",
+      error: error.message,
+    });
+  }
+});
+
+
+
+
 export {
   getAllVideos,
   publishAVideo,
@@ -232,4 +330,5 @@ export {
   deleteVideo,
   togglePublishStatus,
   getAllHomeVideo,
+  fetchSubscriptionVideos,
 };

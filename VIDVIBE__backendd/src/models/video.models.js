@@ -1,4 +1,3 @@
-
 //   id string pk
 //   owner ObjectId users
 //   videoFile string
@@ -11,20 +10,24 @@
 //   createdAt Date
 //   updatedAt Date
 
-
-
-import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2"
-import mongoose , {Schema} from "mongoose"
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import mongoose, { Schema } from "mongoose";
 import { User } from "./user.models.js";
 const videoSchema = new Schema(
   {
     owner: {
       type: Schema.Types.ObjectId,
-      ref: User,
+      ref: "User",
     },
+    more: [
+      {
+        type: String, // Now supports username & avatar (Strings)
+      },
+    ],
+
     videoFile: {
       type: String,
-      required: true
+      required: true,
     },
     thumbnail: {
       type: String,
@@ -42,13 +45,20 @@ const videoSchema = new Schema(
       type: Number,
       required: true,
     },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
     views: {
       type: Number,
-      default:0
+      default: 0,
     },
     isPublished: {
       type: Boolean,
-      default:true
+      default: true,
     },
   },
   {
@@ -57,4 +67,4 @@ const videoSchema = new Schema(
 );
 
 videoSchema.plugin(mongooseAggregatePaginate);
-export const Video= mongoose.model("Video",videoSchema)
+export const Video = mongoose.model("Video", videoSchema);

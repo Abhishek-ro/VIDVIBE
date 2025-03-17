@@ -55,11 +55,18 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    subscribersCount: {
+      type: Number,
+      default: 0, // ✅ Default count is 0
+    },
+    subscriptions: [{ type: Schema.Types.ObjectId, ref: "User" }], // ✅ Added subscribed channels
   },
   {
     timestamps: true,
   }
 );
+
+
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

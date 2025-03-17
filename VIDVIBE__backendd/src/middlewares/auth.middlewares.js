@@ -8,16 +8,16 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
     const token =
       (await req.cookies?.accessToken) ||
       req.header("Authorization")?.replace("Bearer ", "");
-    console.log(token);
+  
     if (!token) throw new APIERROR(401, "UnAuthorized!!!");
 
     // eslint-disable-next-line no-undef
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    console.log(decodedToken);
+   
     const user = await User.findById(decodedToken?._id)
     if (!user) throw new APIERROR(401, "UnAuthorized user!!!");
     req.user = user;
-    console.log("all good");
+   
     next();
   } catch (error) {
     throw new APIERROR(401, "UnAuthorized!!!", error);

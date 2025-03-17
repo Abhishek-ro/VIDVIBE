@@ -3,6 +3,8 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 import { APIERROR } from "../utils/APIError.js";
 import { API } from "../utils/APIResponses.js";
 import { User } from "../models/user.models.js";
+import { Video } from "../models/video.models.js";
+import { WatchHistory } from "../models/watch_history.models.js";
 import {
   uploadOnCloudinary,
   deleteFromCloudinary,
@@ -28,7 +30,6 @@ const generateAccessAndRefreshToken = async (userId) => {
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, username, email, password } = req.body;
-  console.log({ fullName, username, email, password });
 
   if (
     [fullName, username, email, password].some(
@@ -78,7 +79,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const createdUser = await User.findById(user._id).select(
       "-password -refreshToken"
     );
-    console.log(createdUser._id);
+
 
     if (!createdUser._id) {
       throw new APIERROR(500, "Something went Wrong while registering user!!!");
@@ -144,39 +145,43 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  if (req.user?.refreshToken === null)
+  if (!req.user?.refreshToken)
     throw new APIERROR(401, "User Already Logged Out!!!");
 
   try {
-    await User.findByIdAndUpdate(
-      req.user?._id,
-      {
-        $set: { refreshToken: null },
-      },
+    
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: { refreshToken: null } }, 
       { new: true }
     );
-    //req.user.refreshToken = null;
+
+    if (!user) throw new APIERROR(404, "User Not Found!!!");
+    // req.user.refreshToken = null;
     const options = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
     };
-    const name = req.user?.username;
-    console.log(req.user?.refreshToken);
+    await user.save({ validateBeforeSave: true });
     return res
-      .status(200)
       .clearCookie("refreshToken", options)
       .clearCookie("accessToken", options)
-      .json(new API(200, {}, `User Logged Out Successfully!!!${name}`));
+      .status(200)
+      .json(
+        new API(200, {}, `User Logged Out Successfully!!! ${req.user.username}`)
+      );
   } catch (error) {
     throw new APIERROR(500, "Something went wrong while logging out!!!");
   }
 });
 
+
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  console.log(req.body?.refreshToken);
+  
   const incomeingRefreshToken = await (req.cookies?.refreshToken ||
     req.body?.refreshToken);
-  console.log(incomeingRefreshToken);
+
   if (!incomeingRefreshToken) throw new APIERROR(401, "UnAuthorized!!!");
   try {
     const decoded = jwt.verify(
@@ -216,7 +221,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = await req.body;
 
-  console.log(req.user);
+ 
   if (!oldPassword || !newPassword)
     throw new APIERROR(400, "Old Password and New Password Required!!!");
 
@@ -241,20 +246,17 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
   try {
-    const { fullName, email } = req.body;
-    if (!fullName || !email)
-      throw new APIERROR(400, "Full Name and Email Required!!!");
+    const { fullName } = req.body;
+    if (!fullName)
+      throw new APIERROR(400, "Full Name Required!!!");
     const user = await User.findByIdAndUpdate(req.user?._id, {
       $set: {
-        fullName,
-        email: email,
+        fullName
       },
     }).select("-password -refreshToken");
     if (!user) throw new APIERROR(404, "User Not Found!!!");
     user.fullName = fullName;
-    user.email = email;
     user.save({ validateBeforeSave: false });
-    console.log(user.fullName);
     return res
       .status(200)
       .json(new API(200, user, "User Details Updated Successfully!!!"));
@@ -303,7 +305,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
-  console.log(username);
+
   if (!username?.trim()) {
     throw new APIERROR(400, "Username is Required!!!");
   }
@@ -366,55 +368,48 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     .json(new API(200, channel[0], "Channel Found Successfully!!!"));
 });
 
-const getWatchHistory = asyncHandler(async (req, res) => {
-  const user = await User.aggregate([
-    {
-      $match: {
-        _id: new mongoose.Types.ObjectId(req.user._id),
-      },
-    },
-    {
-      $lookup: {
-        from: "videos",
-        localField: "watchHistory",
-        foreignField: "_id",
-        as: "watchHistory",
-        pipeline: [
-          {
-            $lookup: {
-              from: "users",
-              localField: "owner",
-              foreignField: "_id",
-              as: "owner",
-              pipeline: [
-                {
-                  $project: {
-                    fullName: 1,
-                    username: 1,
-                    avatar: 1,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $addFields: {
-              owner: {
-                $first: "$owner",
-              },
-            },
-          },
-        ],
-      },
-    },
-  ]);
+const getWatchHistory = asyncHandler(async (req, res, next) => {
+  const userId = req?.user?._id;
 
-  return res
-    .status(200)
-    .json(
-      new API(200, user[0].watchHistory, "Watch history fetched successfully")
-    );
+  if (!userId) return next(new APIERROR(401, "Unauthorized Access!!!"));
+
+  let watchHistory = await WatchHistory.findOne({ user: userId })
+    .populate("videos.video", "title thumbnail duration views createdAt username")
+    .sort({ "videos.watchedAt": -1 });
+  console.log('herhehheheh',watchHistory);
+  if (!watchHistory) {
+    watchHistory = await WatchHistory.create({ user: userId, videos: [] });
+  }
+
+  return res.status(200).json(
+    new API(200, "Watch history retrieved", {
+      history: watchHistory.videos || [],
+    })
+  );
 });
+
+const getUserVideos = asyncHandler(async (req, res, next) => {
+  const userId = req?.user?.id;
+
+  if (!userId) return next(new APIERROR(401, "Unauthorized Access!!!"));
+
+  const videos = await Video.find({ owner: userId })
+    .select("id thumbnail title views createdAt")
+    .sort({ createdAt: -1 }); // Sorting by newest first
+
+  if (!videos.length) {
+    return res
+      .status(200)
+      .json(new API(200, "No videos uploaded yet", { videos: [] }));
+  }
+
+  res
+    .status(200)
+    .json(new API(200, "User videos fetched successfully", { videos }));
+});
+
+
+
 
 // get username by its id
 
@@ -426,9 +421,8 @@ const getUsernameById = asyncHandler(async (req, res) => {
   const user = await User.findById(id);
   if (!user) throw new APIERROR(404, "User Not Found!!!");
 
-  console.log(user.username);
 
-  res.status(200).json({ username: user.username }); 
+  res.status(200).json({ username: user }); 
 });
 
 
@@ -446,6 +440,7 @@ export {
   getUserChannelProfile,
   getWatchHistory,
   getUsernameById,
+  getUserVideos,
 };
 
 /*

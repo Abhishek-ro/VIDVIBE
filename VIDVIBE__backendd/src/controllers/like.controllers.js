@@ -10,13 +10,15 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
       throw new APIERROR(400, "Video Id is required");
     }
     const like = await Like.findOne({ video: videoId, likedBy: req.user._id });
-    console.log(like);
+     
+
+
     if (like) {
       await Like.findByIdAndDelete(like._id);
       return res.status(200).json({ message: "Video unliked successfully" });
     } else {
       await Like.create({ video: videoId, likedBy: req.user._id });
-      return res.status(200).json({ message: "Video liked successfully" }); 
+      return res.status(200).json({ message: "Video liked successfully" });
     }
   } catch (error) {
     throw new APIERROR(500, error.message);
@@ -48,7 +50,6 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
   }
 });
 
-
 const toggleTweetLike = asyncHandler(async (req, res) => {
   try {
     const { tweetId } = req.params;
@@ -73,32 +74,37 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 
 const getLikedVideos = asyncHandler(async (req, res) => {
   try {
-    const userId = req.user?._id;
-
-    if (!userId) {
-      throw new APIERROR(400, "User ID is required");
-    }
-
+    const userId = req.user._id;
+    
     const likedVideos = await Like.find({
       likedBy: userId,
       video: { $exists: true },
     })
-      .populate("video", "title description")
+      .populate("video", "title description thumbnail views duration createdAt")
       .lean();
-
-    if (!likedVideos.length) {
-      return res.status(200).json({
-        status: "success",
-        message: "No liked videos found.",
-        data: [],
-      });
-    }
-
+    
     res.status(200).json({
       status: "success",
-      data: {
-        likedVideos,
-      },
+      message: likedVideos.length
+        ? "Liked videos fetched successfully"
+        : "No liked videos found.",
+      data: likedVideos,
+    });
+  } catch (error) {
+    throw new APIERROR(500, error.message);
+  }
+});
+
+const getTotalLikes = asyncHandler(async (req, res) => {
+  try {
+    const { videoId } = req.params;
+
+    const likes = await Like.find({ video: videoId }).lean();
+    
+    res.status(200).json({
+      status: "success",
+      message: "Total likes fetched successfully",
+      data: likes.length,
     });
   } catch (error) {
     throw new APIERROR(500, error.message);
@@ -106,4 +112,10 @@ const getLikedVideos = asyncHandler(async (req, res) => {
 });
 
 
-export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };
+export {
+  toggleCommentLike,
+  toggleTweetLike,
+  toggleVideoLike,
+  getLikedVideos,
+  getTotalLikes,
+};
