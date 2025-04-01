@@ -26,11 +26,46 @@ export const getVideos = (limit, offset) =>
 export const getUsernameById = (id) =>
   api.get(`/api/v1/user/getUsernameById/${id}`);
 export const getVideoById = (id) => api.get(`/api/v1/video/get/${id}`);
-export const updateVideo = (id, data) =>
-  api.post(`/api/v1/video/update/${id}`, data);
+
 export const deleteVideo = (id) => api.delete(`/api/v1/video/delete/${id}`);
 export const toggleVideoVisibility = (id) =>
   api.put(`/api/v1/video/toggle-publish-status/${id}`);
+
+
+export const updateVideo = async (videoId, updateDetails) => {
+  try {
+    const formData = new FormData();
+
+    if (updateDetails.title) formData.append("title", updateDetails.title);
+    if (updateDetails.description)
+      formData.append("description", updateDetails.description);
+    if (updateDetails.thumbnail)
+      formData.append("thumbnail", updateDetails.thumbnail);
+
+    const response = await api.put(
+      `/api/v1/video/update/${videoId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data; // ✅ Returns response data for better handling in frontend
+  } catch (error) {
+    console.error(
+      "Error updating video:",
+      error?.response?.data || error.message
+    );
+    throw error; // ✅ Ensures errors are properly caught and handled in the frontend
+  }
+};
+
+
+
+
+
 // 🔹 Likes API
 export const toggleVideoLike = (videoId) =>
   api.put(`/api/v1/like/toggle-video-like/${videoId}`);
@@ -127,5 +162,7 @@ export const watcheHistory=()=>api.get("/api/v1/user/watch-history")
 export const getYourVideos=()=>api.get("/api/v1/user/user-videos")
 export const getChannelVideos = (channelId) =>
   api.get(`/api/v1/subscription/channel/${channelId}/videos`);
+export const searchVideos = (searchQuery) =>
+  api.get(`/api/v1/video/video/search?query=${searchQuery}`);
 export const logout = () => api.post("/api/v1/user/logout");
 export default api;

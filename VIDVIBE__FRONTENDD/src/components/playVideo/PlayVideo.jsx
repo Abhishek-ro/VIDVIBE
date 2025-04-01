@@ -20,6 +20,7 @@ import Like from "../../assets/like.png";
 import dislike from "../../assets/dislike.png";
 import share from "../../assets/share.png";
 import save from "../../assets/save.png";
+import useTheme from "../../contexts/theme.js";
 
 const timeAgo = (timestamp) => {
   const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
@@ -55,6 +56,7 @@ export const PlayVideo = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [userId, setUserId] = useState(null);
   const [totalSubs, setTotalSub] = useState(0);
+  const { themeMode } = useTheme();
   useEffect(() => {
     const fetchVideo = async () => {
       try {
@@ -68,7 +70,7 @@ export const PlayVideo = () => {
         const videoData = res?.data?.message?.video;
         setVideo(videoData);
 
-        const totalSubsDisplay = await getChannelSubscribers(videoData?.owner)
+        const totalSubsDisplay = await getChannelSubscribers(videoData?.owner);
         console.log("Total", totalSubsDisplay?.data?.data?.subscribers?.length);
         setTotalSub(totalSubsDisplay?.data?.data?.subscribers?.length);
         await handleAddView(videoId);
@@ -91,24 +93,23 @@ export const PlayVideo = () => {
       }
     };
 
-    fetchVideo();   
+    fetchVideo();
   }, [videoId]);
 
   const handleSubscribeToggle = async () => {
-  try {
-    const response = await isSubscribedToggle(video.owner);
-    console.log("Subscription Response:", response);
+    try {
+      const response = await isSubscribedToggle(video.owner);
+      console.log("Subscription Response:", response);
 
-    // ✅ Toggle subscription status
-    setIsSubscribed((prev) => !prev);
+      // ✅ Toggle subscription status
+      setIsSubscribed((prev) => !prev);
 
-    // ✅ Immediately update the subscriber count based on action
-    setTotalSub((prev) => (isSubscribed ? prev - 1 : prev + 1));
-  } catch (error) {
-    console.error("Error toggling subscription:", error);
-  }
-};
-
+      // ✅ Immediately update the subscriber count based on action
+      setTotalSub((prev) => (isSubscribed ? prev - 1 : prev + 1));
+    } catch (error) {
+      console.error("Error toggling subscription:", error);
+    }
+  };
 
   const loadComments = async (page) => {
     if (loading || !hasMore) return;
@@ -160,7 +161,7 @@ export const PlayVideo = () => {
       console.error("Error toggling like:", error);
     }
   };
-  
+
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
     try {
@@ -179,9 +180,9 @@ export const PlayVideo = () => {
   }, [totalSubs]);
 
   if (!video || !channel) return <p>Loading...</p>;
-  
+
   return (
-    <div className="play-video">
+    <div className={`${themeMode === "dark" ? "play-videoD" : "play-video"}`}>
       <video src={video.videoFile} controls autoPlay muted></video>
       <h3>{video.title}</h3>
       <div className="play-video-info">
@@ -204,21 +205,29 @@ export const PlayVideo = () => {
         </div>
       </div>
       <hr />
-      <div className="publisher">
-        <div>
+
+      <div
+        className={`${
+          themeMode === "dark" ? "publisherD" : "publisher"
+        } flex justify-between items-center`}
+      >
+        <div className="flex items-center">
           <div className="inline-box">
-            <img src={channel.avatar} />
+            <img src={channel.avatar} alt="chn-avt" />
           </div>
-          <p>{channel.username}</p>
-          <span>{totalSubs || 0} Subscribers</span>
+          <div className="info---div ml-3">
+            <p>{channel.username}</p>
+            <span>{totalSubs || 0} Subscribers</span>
+          </div>
         </div>
         <button
-          className={isSubscribed ? "subscribed" : ""}
+          className={`ml-auto ${isSubscribed ? "subscribed" : ""}`}
           onClick={handleSubscribeToggle}
         >
           {isSubscribed ? "Subscribed" : "Subscribe"}
         </button>
       </div>
+
       <div className="vid-description">
         <p>{video.description}</p>
         <hr />

@@ -42,12 +42,7 @@ const userSchema = new Schema(
     coverImage: {
       type: String,
     },
-    watchHistory: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Video",
-      },
-    ],
+    
     password: {
       type: String,
       required: [true, "Password is Required!!!"],
@@ -59,7 +54,7 @@ const userSchema = new Schema(
       type: Number,
       default: 0, // ✅ Default count is 0
     },
-    subscriptions: [{ type: Schema.Types.ObjectId, ref: "User" }], // ✅ Added subscribed channels
+    subscriptions: [{ type: Schema.Types.ObjectId, ref: "User" }], 
   },
   {
     timestamps: true,

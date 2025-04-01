@@ -4,17 +4,19 @@ import sub from "../../assets/sub.png"
 import user from "../../assets/user.png";
 import { useState, useEffect } from "react";
 import ChannelData from "../feed/channelData.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import {
   getUserId,
   getSubscribedChannels,
   getChannelVideos,
 } from "../../API/index.js";
 
+import useTheme from "../../contexts/theme.js";
 export const SideBar = ({ sideBar, category, setCategory }) => {
     const navigate = useNavigate();
   const [userData, setUserData] = useState([]);
   const [channelData,setChannelData]=useState([])
+  const { themeMode} = useTheme();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,40 +33,50 @@ export const SideBar = ({ sideBar, category, setCategory }) => {
 
   
   return (
-    <div className={`sidebar ${sideBar ? "" : "small-sidebar"}`}>
+    <div
+      className={`sidebar ${sideBar ? "" : "small-sidebar"} ${
+        themeMode === "dark" ? "dark" : ""
+      }`}
+    >
       <div className="shortcut-links">
         <div
           className={`side-link ${category === 0 ? "active" : ""}`}
           onClick={() => setCategory(0)}
         >
           <img src={home} alt="Home" />
-          <p>Home</p>
+          <p>
+            <Link to="/">Home</Link>
+          </p>
         </div>
         <div
           className={`side-link ${category === 1 ? "active" : ""}`}
           onClick={() => setCategory(1)}
         >
           <img src={sub} alt="Blogs" />
-          <p>Subscriptions</p>
+          <p>
+            <Link to="/subscribed">Subscribed</Link>
+          </p>
         </div>
         <div
           className={`side-link ${category === 2 ? "active" : ""}`}
           onClick={() => setCategory(2)}
         >
           <img src={user} alt="news" />
-          <p>User</p>
+          <p>
+            <Link to="/u">User</Link>
+          </p>
         </div>
         <hr />
       </div>
       <div className="subscribed-list">
-        <h3>SubScribed</h3>
+        <h3 className="subscribed-listh3">SubScribed</h3>
         {userData.map((data) => (
           <div
             className="side-link"
             key={data?.channel?._id}
             onClick={() =>
               navigate(`/channel/${data?.channel?.username}`, {
-                state: { channelData: data?.channel?._id},
+                state: { channelData: data?.channel?._id },
               })
             }
           >

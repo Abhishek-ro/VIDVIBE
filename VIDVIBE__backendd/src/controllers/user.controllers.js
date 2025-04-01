@@ -275,6 +275,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     },
   }).select("-password -refreshToken");
   if (!user) throw new APIERROR(404, "User Not Found!!!");
+  
   return res
     .status(200)
     .json(new API(200, user, "User Avatar Updated Successfully!!!"));
@@ -381,6 +382,7 @@ const getWatchHistory = asyncHandler(async (req, res, next) => {
     watchHistory = await WatchHistory.create({ user: userId, videos: [] });
   }
 
+  
   return res.status(200).json(
     new API(200, "Watch history retrieved", {
       history: watchHistory.videos || [],
@@ -394,7 +396,7 @@ const getUserVideos = asyncHandler(async (req, res, next) => {
   if (!userId) return next(new APIERROR(401, "Unauthorized Access!!!"));
 
   const videos = await Video.find({ owner: userId })
-    .select("id thumbnail title views createdAt")
+    .select("id thumbnail title views createdAt duration")
     .sort({ createdAt: -1 }); // Sorting by newest first
 
   if (!videos.length) {

@@ -80,7 +80,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
       likedBy: userId,
       video: { $exists: true },
     })
-      .populate("video", "title description thumbnail views duration createdAt")
+      .populate("video", "title description thumbnail views duration createdAt owner")
       .lean();
     
     res.status(200).json({

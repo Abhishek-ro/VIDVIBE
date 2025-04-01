@@ -9,17 +9,42 @@
 
 .side-video-list img{
     flex-basis: 49%;
-    width: 50%;
+    width: 168px;
+    height: 94px;
 }
 
 
 .vid-info{
-    flex-basis: 49%;
+    flex-basis: 48%;
+    color:rgba(0, 0, 0, 0.877);
+    font-size: 14px;
+}
 
 
+
+.vid-infoD{
+
+    font-size: 14px;
+    flex-basis: 48%;
+    color: #b3a8a8;
+}
+
+.para{
+    margin-top: 10px;
 }
 
 .vid-info h4{
     margin-bottom: 5px;
-    font-size:13px;
+    font-size:16px;
+    color:rgba(0, 0, 0, 0.982)
+}
+
+.vid-infoD h4{
+    margin-bottom: 5px;
+    font-size:16px;
+    color: white;
+}
+
+.flex{
+    display: flex;
 }

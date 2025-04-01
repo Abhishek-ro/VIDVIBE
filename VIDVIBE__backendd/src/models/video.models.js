@@ -21,7 +21,7 @@ const videoSchema = new Schema(
     },
     more: [
       {
-        type: String, // Now supports username & avatar (Strings)
+        type: String,
       },
     ],
 

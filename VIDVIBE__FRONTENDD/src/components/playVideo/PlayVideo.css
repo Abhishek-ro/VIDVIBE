@@ -1,15 +1,29 @@
-.play-video {
+.play-video,.play-videoD {
   flex-basis: 69%;
+}
+
+.play-videoD{
+  background: #111010;
 }
 
 .play-video video {
   width: 100%;
 }
+.play-videoD video {
+  width: 100%;
+}
+
 
 .play-video h3 {
   margin-top: 10px;
   font-weight: 600;
   font-size: 22px;
+}
+.play-videoD h3 {
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 22px;
+  color: white;
 }
 
 .play-video-info {
@@ -39,35 +53,72 @@
   margin: 10px 0;
 }
 
-.publisher {
+.play-videoD hr {
+  border: 0;
+  height: 1px;
+  background: #ccc;
+  margin: 10px 0;
+}
+
+.publisher,.publisherD {
   display: flex;
   align-items: center;
   margin-top: 20px;
 }
 
 .publisher div {
-  flex: 1;
+
   line-height: 18px;
 }
+.publisherD div {
+
+  line-height: 18px;
+}
+
 
 .publisher img {
   width: 40px;
   border-radius: 50%;
   margin-right: 15px;
 }
-
+.publisherD img {
+  width: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
 .publisher div p {
   color: #000;
   font-weight: 600;
   font-size: 18px;
 }
+.publisherD div p {
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+
 
 .publisher div span {
   font-size: 13px;
   color: #5a5a5a;
 }
+.publisherD div span {
+  font-size: 13px;
+  color: #afafaf;
+  font-weight: 500;
+}
 
 .publisher button {
+  background: red;
+  color: #fff;
+  padding: 8px 30px;
+  border: 0;
+  outline: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.publisherD button {
   background: red;
   color: #fff;
   padding: 8px 30px;
@@ -155,16 +206,7 @@
   margin-top: 3px;
 }
 
-.publisher button {
-  background: red;
-  color: #fff;
-  padding: 8px 30px;
-  border: 0;
-  outline: 0;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
+
 
 .publisher button:hover {
   transform: scale(1.05);
@@ -177,6 +219,12 @@
 
 
 .inline-box{
-  display: flex;
   margin-bottom: 10px;
+}
+
+.info---div{
+  
+}
+.info---div p{
+  font-size: 30px;
 }

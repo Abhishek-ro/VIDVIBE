@@ -1,15 +1,15 @@
 import "./Recommended.css";
 import { getVideos, getUsernameById } from "../../API/index.js";
 import { useEffect, useState, useRef, useCallback } from "react";
-
+import useTheme from "../../contexts/theme.js";
 
 const Recommended = () => {
   const [videos, setVideos] = useState([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const videoIds = useRef(new Set()); 
+  const videoIds = useRef(new Set());
   const loaderRef = useRef(null);
-
+  const { themeMode } = useTheme();
   const timeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
     const intervals = {
@@ -31,11 +31,11 @@ const Recommended = () => {
 
   const fetchVideos = useCallback(async () => {
     if (!hasMore) return;
-    const limit=8
+    const limit = 8;
     try {
-      const res = await getVideos(limit,page);
+      const res = await getVideos(limit, page);
       const videoData = res?.data?.videos || [];
-  
+
       if (videoData.length === 0) {
         setHasMore(false);
         return;
@@ -51,11 +51,10 @@ const Recommended = () => {
         })
       );
 
-      
       const newVideos = updatedVideos.filter(
         (video) => !videoIds.current.has(video._id)
       );
-      
+
       newVideos.forEach((video) => videoIds.current.add(video._id));
 
       setVideos((prevVideos) => [...prevVideos, ...newVideos]);
@@ -65,8 +64,7 @@ const Recommended = () => {
     }
   }, [page]);
 
-  useEffect(() => {
-  }, [hasMore]);
+  useEffect(() => {}, [hasMore]);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -88,21 +86,27 @@ const Recommended = () => {
     <div className="recommended">
       {videos.map((video) => (
         <a
-          href  ={`/video/get/${video._id}`}
+          href={`/video/get/${video._id}`}
           key={video._id}
           className="side-video-list"
         >
           <img src={video.thumbnail} alt="Video Thumbnail" />
-          <div className="vid-info">
+          <div className={`${themeMode === "dark" ? "vid-infoD" : "vid-info"}`}>
             <h4>{video.title}</h4>
-            <p>{video.username}</p>
-            <p>
+            <span
+              className={`${
+                themeMode === "dark" ? "channelNameD" : "channelName"
+              }`}
+            >
+              {video.username}
+            </span>
+            <p className={`${themeMode === "dark" ? "vid-infoD" : "vid-info"} para`}>
               {video.views} Views • {timeAgo(video.createdAt)}
             </p>
           </div>
         </a>
       ))}
-      {hasMore &&  (
+      {hasMore && (
         <div ref={loaderRef} className="loader">
           Loading more...
         </div>

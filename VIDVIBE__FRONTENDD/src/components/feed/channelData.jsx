@@ -3,23 +3,24 @@ import { Link, useLocation } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { getChannelVideos } from "../../API/index.js";
 import "./Feed.css";
+import useTheme from "../../contexts/theme.js";
 
 const ChannelData = () => {
   const location = useLocation();
-  const channelId = location.state?.channelData; 
+  const channelId = location.state?.channelData;
   const [videos, setVideos] = useState([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const observerRef = useRef(null);
   const limit = 16;
+  const { themeMode } = useTheme();
 
-
-  const fetchVideos = useCallback( 
+  const fetchVideos = useCallback(
     async (pageNumber = 0, reset = false) => {
       if (!hasMore || loading || !channelId) return; // Ensure channelId exists
       setLoading(true);
-      
+
       try {
         const dataSub = await getChannelVideos(channelId); // Pass correct parameter
         const dataChannel = dataSub?.data?.data?.videos;
@@ -64,24 +65,44 @@ const ChannelData = () => {
     return () => observer.disconnect();
   }, [videos, hasMore, loading, fetchVideos]);
 
-  console.log(videos)
+  console.log(videos);
 
   return (
     <div className="feed">
       {videos.map((video) => (
-        <Link to={`/video/get/${video._id}`} className="card" key={video._id}>
+        <Link
+          to={`/video/get/${video._id}`}
+          className={themeMode === "dark" ? "cardD" : "card"}
+          key={video._id}
+        >
           <div className="thumbnail-container">
             <img src={video.thumbnail} alt={video.title} />
           </div>
-          <div className="card-content">
-            <h2 className="truncate">{video.title}</h2>
-            <h3 className="truncate">{video.username || "Unknown"}</h3>
-            <p>
-              {video.views} views •{" "}
-              {formatDistanceToNow(new Date(video.createdAt), {
-                addSuffix: true,
-              })}
-            </p>
+          <div
+            className={`${
+              themeMode === "dark" ? "card-contentD" : "card-content"
+            }`}
+          >
+            <div className="flex">
+              <div>
+                <img
+                  src={video.more[1]}
+                  className="img-pro"
+                  style={{ height: "40px", width: "40px" }}
+                  alt="chn-img"
+                />
+              </div>
+              <div>
+                <h2 className="truncate">{video.title}</h2>
+                <h3 className="truncate">{video.more[0] || "Unknown"}</h3>
+                <p>
+                  {video.views} views •{" "}
+                  {formatDistanceToNow(new Date(video.createdAt), {
+                    addSuffix: true,
+                  })}
+                </p>
+              </div>
+            </div>
           </div>
         </Link>
       ))}

@@ -3,10 +3,10 @@ import menu_icon from "../../assets/menu.png";
 import logo from "../../assets/logo.png";
 import search_icon from "../../assets/search.png";
 import upload_icon from "../../assets/upload.png";
-import more_icon from "../../assets/more.png";
-import notification_icon from "../../assets/notification.png";
+import Light from "../../assets/lightMode.png"
+import DarkMode from "../../assets/darkmode.png";
 import { Link, useNavigate } from "react-router-dom";
-
+import SearchedV from "./SearchedV.jsx";
 import { useState, useEffect } from "react";
 import {
   getUserId,
@@ -15,9 +15,12 @@ import {
   updateUserAvatar,
   updateUserCover,
   uploadVideo,
+  searchVideos,
   logout,
 } from "../../API/index.js";
 
+import useTheme from "../../contexts/theme.js";
+let exportedValue;
 const NAV_HEADER = ({ setSideBar }) => {
   const [userInfo, setUserInfo] = useState({});
   const [showPopup, setShowPopup] = useState(false);
@@ -35,27 +38,28 @@ const NAV_HEADER = ({ setSideBar }) => {
   const [showUpdateCover, setShowUpdateCover] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
   const [showUploadOptions, setShowUploadOptions] = useState(false);
-  const [showForm,setShowForm] =useState(false)
-  const [videoUpload,setVideoUpload]=useState(null)
+  const [showForm, setShowForm] = useState(false);
+  const [videoUpload, setVideoUpload] = useState(null);
   const [thumbnailUpload, setThumbnailUpload] = useState(null);
   const [titleUpload, setTitleUpload] = useState("");
   const [descriptionUpload, setDescriptionUpload] = useState("");
-  
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const { themeMode, darkTheme, lightTheme } = useTheme();
+  console.log(themeMode)
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await getUserId();
-        
+
         if (response.data.data.accessToken === null) return;
         setUserInfo(response.data.data || {});
-        setOldFullName(response.data?.fullName || ""); 
+        setOldFullName(response.data?.fullName || "");
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     };
     fetchUser();
-    
   }, []);
 
   useEffect(() => {
@@ -72,6 +76,13 @@ const NAV_HEADER = ({ setSideBar }) => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+
+  const toggleTheme = () => {
+    themeMode === "light" ? darkTheme() : lightTheme();
+    
+  };
+
+  console.log(themeMode);
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword) {
       setMessage({ type: "error", text: "Both fields are required!" });
@@ -143,9 +154,9 @@ const NAV_HEADER = ({ setSideBar }) => {
     }
   };
 
-  const handleAddVideo=async(event)=>{
-    event.preventDefault()
-    if (!videoUpload||!descriptionUpload||!titleUpload) {
+  const handleAddVideo = async (event) => {
+    event.preventDefault();
+    if (!videoUpload || !descriptionUpload || !titleUpload) {
       setMessage({ type: "error", text: "All fields are required!" });
       return;
     }
@@ -162,7 +173,7 @@ const NAV_HEADER = ({ setSideBar }) => {
         thumbnailUpload
       );
 
-      console.log('hehehehehehehehehehehehehehehe',response)
+      console.log("hehehehehehehehehehehehehehehe", response);
 
       setMessage({ type: "success", text: "Avatar updated successfully!" });
       setShowForm(false);
@@ -175,7 +186,7 @@ const NAV_HEADER = ({ setSideBar }) => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleChangeCoverImg = async () => {
     if (!newCover) {
@@ -202,23 +213,40 @@ const NAV_HEADER = ({ setSideBar }) => {
 
   const handleLogout = async () => {
     try {
-       
       setShowConfirmLogout(false);
-       
+
       await logout();
       localStorage.setItem("accessToken", null);
-      navigate("/auth"); 
+      navigate("/auth");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
-  const handleUploadVideo = ()=>{
-    setShowForm(true)
-  }
+  const handleUploadVideo = () => {
+    setShowForm(true);
+  };
+
+ const handleKeyDown = (e) => {
+   if (e.key === "Enter") {
+     searchVideo();
+   }
+ };
+
+ const searchVideo = async () => {
+   if (!searchQuery.trim()) return;
+   try {
+     handle(searchQuery)
+     navigate(`/video/search?query=${searchQuery}`);
+   } catch (error) {
+     console.error("Search failed:", error);
+   }
+ };
+
+
 
   return (
     <>
-      <nav className="flex-div">
+      <nav className={`flex-div ${themeMode === "dark" ? "dark" : "light"}`.trim()}>
         {/* Left Section */}
         <div className="nav-left flex-div">
           <img
@@ -235,8 +263,13 @@ const NAV_HEADER = ({ setSideBar }) => {
         {/* Middle Section */}
         <div className="nav-middle flex-div">
           <div className="search-box flex-div">
-            <input type="text" placeholder="Search" />
-            <img src={search_icon} alt="Search Icon" />
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <img src={search_icon} alt="Search Icon" onClick={searchVideo} />
           </div>
         </div>
 
@@ -248,8 +281,11 @@ const NAV_HEADER = ({ setSideBar }) => {
             className="upload-icon"
             onClick={() => setShowUploadOptions(!showUploadOptions)}
           />
-          <img src={more_icon} alt="More Options" />
-          <img src={notification_icon} alt="Notifications" />
+          <img
+            src={themeMode === "dark" ? Light : DarkMode}
+            alt="DarkMode"
+            onClick={toggleTheme}
+          />
 
           {/* User Icon */}
           <img
@@ -261,7 +297,11 @@ const NAV_HEADER = ({ setSideBar }) => {
 
           {/* Popup Menu */}
           {showPopup && (
-            <div className="user-popup show">
+            <div
+              className={`${
+                themeMode === "dark" ? "user-popupD" : "user-popup"
+              } show`}
+            >
               <ul>
                 <li onClick={() => setShowChangePassword(true)}>
                   Change Password
@@ -285,7 +325,11 @@ const NAV_HEADER = ({ setSideBar }) => {
         </div>
       </nav>
       {showUploadOptions && (
-        <div className="upload-options">
+        <div
+          className={`${
+            themeMode === "dark" ? "upload-optionsD" : "upload-options"
+          }`}
+        >
           <button onClick={handleUploadVideo}>Upload Video</button>
         </div>
       )}
@@ -481,6 +525,7 @@ const NAV_HEADER = ({ setSideBar }) => {
           </div>
         </div>
       )}
+      
 
       {showForm && (
         <div className="overlay">
@@ -526,6 +571,11 @@ const NAV_HEADER = ({ setSideBar }) => {
       )}
     </>
   );
-};
 
+
+};
+export const handle = (e) => {
+  exportedValue = e;
+};
 export default NAV_HEADER;
+export { exportedValue };

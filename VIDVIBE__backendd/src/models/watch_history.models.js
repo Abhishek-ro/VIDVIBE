@@ -19,7 +19,7 @@ const watchHistorySchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true } // Adds createdAt & updatedAt fields automatically
+  { timestamps: true }
 );
 
 export const WatchHistory = mongoose.model("WatchHistory", watchHistorySchema);
