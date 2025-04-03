@@ -70,6 +70,7 @@
   padding-right: 2%;
   padding-top: 20px;
   padding-bottom: 20px;
+  min-width: 100vw;
 }
 
 .large-container{

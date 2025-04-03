@@ -6,7 +6,6 @@
   font-family: Arial, sans-serif;
 }
 
-
 nav {
   padding: 12px 3%;
   display: flex;
@@ -18,8 +17,6 @@ nav {
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
-
-
 
 /* Left Section */
 .menu-icon {
@@ -34,13 +31,13 @@ nav {
   transform: scale(1.1);
 }
 
-.nav-left .logo {
+.nav-left {
   width: 140px;
   height: auto;
   transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
-.nav-left .logo:hover {
+.nav-left .logoB:hover {
   opacity: 0.8;
   transform: scale(1.05);
 }
@@ -126,11 +123,12 @@ nav {
   position: absolute;
   top: 60px;
   right: 20px;
-  background: #686464;
+  background: #68646475;
   color: black;
   width: 230px;
   border-radius: 8px;
   padding: 12px 0;
+  backdrop-filter: blur(10px);
   box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
   display: none;
   opacity: 0;
@@ -140,6 +138,8 @@ nav {
 
 /* Show Popup */
 .user-popup.show {
+  position: fixed;
+  z-index: 102;
   display: block;
   opacity: 1;
   transform: translateY(0);
@@ -150,7 +150,6 @@ nav {
   opacity: 1;
   transform: translateY(0);
 }
-
 
 /* Popup Menu Items */
 .user-popup ul {
@@ -166,7 +165,7 @@ nav {
 
 .user-popup li {
   padding: 14px 18px;
-  color:black;
+  color: black;
   cursor: pointer;
   font-size: 15px;
   transition: background 0.2s ease-in-out;
@@ -174,7 +173,7 @@ nav {
 
 .user-popupD li {
   padding: 14px 18px;
-  color:black;
+  color: black;
   cursor: pointer;
   font-size: 15px;
   transition: background 0.2s ease-in-out;
@@ -187,7 +186,6 @@ nav {
   background: #baa7ae;
 }
 
-
 /* Logout Style */
 .user-popup .logout {
   color: red;
@@ -197,7 +195,6 @@ nav {
   color: red;
   font-weight: bold;
 }
-
 
 /* Overlay Background */
 .overlay {
@@ -317,7 +314,6 @@ nav {
   background: #0056b3;
 }
 
-/* Popup Animation */
 @keyframes fadeIn {
   from {
     transform: scale(0.95);
@@ -459,8 +455,6 @@ nav {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-
-
 .upload-options button {
   width: 100%;
   padding: 12px;
@@ -505,7 +499,6 @@ nav {
   background: #f54a0ce2;
   transform: scale(0.98);
 }
-
 
 /* Fade-in Animation */
 @keyframes fadeIn {
@@ -606,130 +599,297 @@ nav {
   background: none;
 }
 
-
-
-
-
-
-
-
-
-
 nav.dark {
   background-color: #111010;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  color:#fff
+  color: #fff;
 }
 
-.dark input, .dark select {
+.dark input,
+.dark select {
   background: #222;
   color: #ddd;
   border: 1px solid #444;
-
+}
+.menu-phone {
+  display: none;
 }
 
+@media screen and (max-width: 1279px) {
+  .menu-icon {
+    width: 20px;
+    margin-left: -17px;
+    margin-right: 19px;
+  }
 
-
-/* 
-
-
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-  color: #ffffff;
+  .logoB {
+    width: 109.1px;
+  }
 }
 
-
-.dark p, .dark span, .dark a, .dark li, .dark label {
-  color: #e0e0e0;
+@media screen and (max-width: 936px) {
+  .nav-right .user-icon {
+    height: 33.3px;
+    width: 33.3px;
+  }
+  .nav-right {
+    margin-right: -23px;
+  }
 }
 
+@media screen and (max-width: 846px) {
+  .nav-right .user-icon {
+    height: 28px;
+    width: 28px;
+  }
+  .menu-icon {
+    width: 24px;
+    margin-left: -10px;
+    margin-right: 15px;
+  }
 
-.dark a {
-  color: #64b5f6;
-  text-decoration: none;
+  .nav-right {
+    margin-right: -29px;
+  }
+  .nav-middle .search-box {
+    padding: 7px 15px;
+    border-radius: 20px;
+  }
+  .logoB {
+    width: 100px;
+  }
+  .nav-right img {
+    width: 24px;
+    margin-right: 10px;
+  }
+  .nav-middle .search-box img {
+    width: 13px;
+  }
+  .nav-middle .search-box input {
+    width: 430px;
+    font-size: 12px;
+    margin-right: 0px;
+  }
 }
 
-.dark a:hover {
-  color: #bb86fc;
-  text-decoration: underline;
+@media screen and (max-width: 762px) {
+  .nav-right .user-icon {
+    height: 25px;
+    width: 25px;
+  }
+  .nav-right {
+    margin-right: -29px;
+  }
+  .nav-middle .search-box {
+    padding: 6px 15px;
+    border-radius: 20px;
+  }
+
+  .logoB {
+    width: 90px;
+  }
+
+  .nav-right img {
+    width: 22px;
+    margin-right: 10px;
+  }
+  .nav-middle .search-box img {
+    width: 13px;
+  }
+  .nav-middle .search-box input {
+    width: 400px;
+  }
 }
 
-.dark button, 
-.dark input[type="submit"], 
-.dark input[type="button"] {
-  background: #333;
-  color: #fff;
-  border: 1px solid #555;
-  padding: 8px 16px;
-  border-radius: 5px;
-  transition: 0.3s;
+@media screen and (max-width: 715px) {
+  .nav-right .user-icon {
+    height: 22px;
+    width: 22px;
+  }
+  .nav-right {
+    margin-right: -29px;
+  }
+  .nav-middle .search-box {
+    padding: 6px 15px;
+    border-radius: 15px;
+  }
+
+  .logoB {
+    width: 90px;
+  }
+
+  .nav-right img {
+    width: 22px;
+    margin-right: 10px;
+  }
+  .nav-middle .search-box img {
+    width: 13px;
+  }
+  .nav-middle .search-box input {
+    width: 360px;
+  }
 }
 
-.dark button:hover, 
-.dark input[type="submit"]:hover, 
-.dark input[type="button"]:hover {
-  background: #444;
-  border-color: #777;
+@media screen and (max-width: 715px) {
+  .nav-middle .search-box input {
+    width: 330px;
+  }
 }
 
-
-
-.dark input:focus, .dark textarea:focus, .dark select:focus {
-  border-color: #64b5f6;
-  outline: none;
+@media screen and (max-width: 642px) {
+  .nav-middle .search-box input {
+    width: 300px;
+  }
+  .menu-icon {
+    width: 17px;
+    margin-left: -3px;
+    margin-right: 19px;
+  }
+  .logoB {
+    width: 85.1px;
+  }
 }
 
-.dark table {
-  width: 100%;
-  border-collapse: collapse;
+@media screen and (max-width: 602px) {
+  .nav-middle .search-box input {
+    width: 270px;
+  }
 }
 
-.dark th, .dark td {
-  border: 1px solid #333;
-  padding: 10px;
-  text-align: left;
+@media screen and (max-width: 602px) {
+  .nav-middle .search-box input {
+    width: 250px;
+  }
+  .nav-middle .search-box {
+    padding: 5px 15px;
+    border-radius: 14px;
+  }
 }
 
-.dark th {
-  background: #1e1e1e;
-  color: #fff;
+@media screen and (max-width: 556px) {
+  .nav-middle .search-box {
+    display: none;
+  }
+  nav {
+  position: fixed;
+  width: 100vw;
+}
+  .menu-phone {
+    display: flex;
+    height: 100%;
+    margin-right: 2px;
+    width: 50px;
+    justify-content: space-between;
+  }
+  .nav-right {
+    display: none;
+  }
+  .logoB {
+    width: 100px;
+  }
+  .menu-icon {
+    width: 14px;
+    margin-left: -1px;
+    margin-right: 10px;
+  }
 }
 
-.dark tr:nth-child(even) {
-  background: #181818;
+.sideBarMob {
+  position: fixed;
+  z-index: 100;
+  top: 48.8px;
+  right: 0;
+  width: 30vw;
+  height: 100vh;
+  background-color: rgba(17, 16, 16, 0.507);
+  backdrop-filter: blur(10px);
+  color: white;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out;
 }
 
-.dark ul, .dark ol {
+.sideBarMob ul {
   list-style: none;
   padding: 0;
 }
 
-.dark li {
-  padding: 4px 0;
+.sideBarMob li {
+  padding: 15px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-weight: 500;
 }
 
-.dark form {
-  background: #1e1e1e;
-  padding: 20px;
-  border-radius: 8px;
+.sideBarMob li:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
 }
 
-.dark .card, .dark .box {
-  background: #1e1e1e;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+.sideBarMob li span {
+  font-size: 20px;
+  opacity: 0.8;
 }
 
 
-.dark .border {
-  border: 1px solid #444;
+
+@media screen and (max-width: 556px) {
+  .logoB {
+    width: 91px;
+  }
+  .menu-icon {
+    width: 14px;
+    margin-left: -1px;
+    margin-right: 10px;
+  } 
+  .user-popupD{
+    position: fixed;
+    right: calc(100vh - 72vh);
+    top:20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(82, 97, 144, 0.858);
+  }
+  
+  .sideBarMob li{
+    font-size: 14px;
+  }
 }
 
 
-.dark footer {
-  background: #111;
-  color: #ccc;
-  padding: 16px;
-  text-align: center;
-} */
+
+@media screen and (max-width: 500px) {
+  .logoB {
+    width: 91px;
+  }
+  .menu-icon {
+    width: 14px;
+    margin-left: -1px;
+    margin-right: 10px;
+  } 
+  .user-popupD{
+    position: fixed;
+    right: calc(100vh - 72vh);
+    top:20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(82, 97, 144, 0.858);
+  }
+
+  .sideBarMob{
+    width: 245px ;
+    height: 245px;
+    position: fixed;
+    top:-45px;
+    right: -50px;
+    border-radius: 50%;
+    transition:step-start;
+  }
+  
+  .sideBarMob li{
+    font-size: 14px;
+  }
+}

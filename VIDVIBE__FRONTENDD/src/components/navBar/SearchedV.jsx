@@ -27,14 +27,17 @@ function SearchResults() {
     fetchVideos();
   }, [query]);
 
+  const formatDuration = (duration) => {
+    if (!duration || isNaN(duration)) return "0:00";
+
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
   return (
     <div className="search-container">
-      <h2
-        className={themeMode === "dark" ? "search-headingD" : "search-heading"}
-      >
-        Search Results for "{query}"
-      </h2>
-
       {videos.length > 0 ? (
         <div className="video-list">
           {videos.map((video) => (
@@ -44,24 +47,28 @@ function SearchResults() {
               className="video-link"
             >
               <div
-                className={themeMode === "dark" ? "video-cardDD" : "video-cardd"}
+                className={
+                  themeMode === "dark" ? "video-cardDD" : "video-cardd"
+                }
               >
-               
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="video-thumbnail"
-                />    
-
-                {/* Video Details */}
+                <div className="video-thumbnail-container">
+                  <img
+                    src={video.thumbnail}
+                    alt={video.title}
+                    className="video-thumbnail"
+                  />
+                  <div className="video-duration">
+                    {formatDuration(video.duration)}
+                  </div>
+                </div>
                 <div className="video-info">
                   <h3
                     className={
                       themeMode === "dark" ? "video-titleD" : "video-title"
                     }
                   >
-                    {video.title.length > 120
-                      ? video.title.substring(0, 117) + "..."
+                    {video.title.length > 80
+                      ? video.title.substring(0, 77) + "..."
                       : video.title}
                   </h3>
                   <p
@@ -87,6 +94,7 @@ function SearchResults() {
                       themeMode === "dark" ? "video-detailsD" : "video-details"
                     }
                   >
+                    
                     {video.description.length > 110
                       ? video.description.substring(0, 107) + "..."
                       : video.description}

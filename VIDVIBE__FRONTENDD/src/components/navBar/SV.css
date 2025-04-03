@@ -1,16 +1,18 @@
 /* Center the search results */
 .search-container {
-  max-width: 1300px;
-  margin: 0 auto;
+  max-width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
 /* Header Styling */
-
 .search-heading {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
-  color:black
+  color: black;
 }
 
 .search-headingD {
@@ -27,26 +29,34 @@
   gap: 16px;
 }
 
-
-
 .video-cardd {
   display: flex;
   width: 100%;
-  gap: 8px; 
-  align-items: stretch; 
+  gap: 8px;
+  align-items: stretch;
   background-color: #fff;
 }
-.video-cardDD{
+
+.video-cardDD {
   display: flex;
   width: 100%;
-  gap: 8px; 
+  gap: 8px;
   align-items: stretch;
   background-color: #111010;
 }
 
-.video-thumbnail {
+.video-thumbnail-container {
+  /* Added this container */
+  position: relative;
   width: 500px;
   height: 280px;
+}
+
+.video-thumbnail {
+  width: 100%;
+  height: 100%;
+  margin-left: 15px;
+  margin-right: 15px;
   object-fit: cover;
 }
 
@@ -63,6 +73,7 @@
   font-weight: bold;
   color: #111010;
 }
+
 .video-titleD {
   font-size: 24px;
   font-weight: bold;
@@ -107,4 +118,87 @@
   font-size: 16px;
   color: #aaa;
   margin-top: 10px;
+}
+
+.video-duration {
+  position: absolute;
+  bottom: 8px; /* Move to bottom */
+  right: 8px; /* Keep right */
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 4px 6px;
+  border-radius: 4px;
+  z-index: 1; /* Ensure it's above the thumbnail */
+}
+
+@media (max-width: 885px) {
+  .search-container {
+    flex-direction: column;
+    margin-top: 20px;
+  }
+
+  .video-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .video-cardd {
+    flex-direction: column;
+
+  }
+
+  .video-cardDD {
+    display: flex;
+    flex-direction: column;
+    
+  }
+
+  .video-thumbnail-container {
+    position: relative;
+    width: 97vw;
+    height: 53.3vw;
+  }
+
+ .video-thumbnail {
+
+  margin-left: 0px;
+  object-fit: cover;
+}
+
+  .video-info {
+    display: flex;
+    max-width: 97vw;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .video-title {
+    font-size: 14px;
+  }
+
+  .video-titleD {
+    font-size: 14px;
+  }
+
+  .channel-logo {
+    height: 30px;
+    width: 30px;
+  }
+
+  .video-details {
+    font-size: 12px;
+    margin-top: 20px;
+  }
+
+  .video-detailsD {
+    font-size: 12px;
+    margin-top: 20px;
+  }
+
+  .video-duration {
+    font-size: 14px;
+  }
 }

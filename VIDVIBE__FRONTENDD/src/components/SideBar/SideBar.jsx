@@ -32,6 +32,7 @@ export const SideBar = ({ sideBar, category, setCategory }) => {
   }, []);
 
   
+  
   return (
     <div
       className={`sidebar ${sideBar ? "" : "small-sidebar"} ${
@@ -69,7 +70,7 @@ export const SideBar = ({ sideBar, category, setCategory }) => {
         <hr />
       </div>
       <div className="subscribed-list">
-        <h3 className="subscribed-listh3">SubScribed</h3>
+        <h3 className="subscribed-listh3">Subscribed</h3>
         {userData.map((data) => (
           <div
             className="side-link"

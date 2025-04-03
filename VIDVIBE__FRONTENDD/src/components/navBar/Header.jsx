@@ -3,7 +3,7 @@ import menu_icon from "../../assets/menu.png";
 import logo from "../../assets/logo.png";
 import search_icon from "../../assets/search.png";
 import upload_icon from "../../assets/upload.png";
-import Light from "../../assets/lightMode.png"
+import Light from "../../assets/lightMode.png";
 import DarkMode from "../../assets/darkmode.png";
 import { Link, useNavigate } from "react-router-dom";
 import SearchedV from "./SearchedV.jsx";
@@ -24,6 +24,7 @@ let exportedValue;
 const NAV_HEADER = ({ setSideBar }) => {
   const [userInfo, setUserInfo] = useState({});
   const [showPopup, setShowPopup] = useState(false);
+  const [showPopupPhone, setShowPopupPhone] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showUpdateDetails, setShowUpdateDetails] = useState(false); // ✅ New state
   const [oldPassword, setOldPassword] = useState("");
@@ -44,9 +45,12 @@ const NAV_HEADER = ({ setSideBar }) => {
   const [titleUpload, setTitleUpload] = useState("");
   const [descriptionUpload, setDescriptionUpload] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 556);
+  const [sideBarMobile, setSideBarMobile] = useState(false);
   const navigate = useNavigate();
+
   const { themeMode, darkTheme, lightTheme } = useTheme();
-  console.log(themeMode)
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -76,13 +80,10 @@ const NAV_HEADER = ({ setSideBar }) => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-
   const toggleTheme = () => {
     themeMode === "light" ? darkTheme() : lightTheme();
-    
   };
 
-  console.log(themeMode);
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword) {
       setMessage({ type: "error", text: "Both fields are required!" });
@@ -226,27 +227,353 @@ const NAV_HEADER = ({ setSideBar }) => {
     setShowForm(true);
   };
 
- const handleKeyDown = (e) => {
-   if (e.key === "Enter") {
-     searchVideo();
-   }
- };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      searchVideo();
+    }
+  };
 
- const searchVideo = async () => {
-   if (!searchQuery.trim()) return;
-   try {
-     handle(searchQuery)
-     navigate(`/video/search?query=${searchQuery}`);
-   } catch (error) {
-     console.error("Search failed:", error);
-   }
- };
+  const searchVideo = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      handle(searchQuery);
+      navigate(`/video/search?query=${searchQuery}`);
+    } catch (error) {
+      console.error("Search failed:", error);
+    }
+  };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 556);
+    };
 
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div>
+        <nav className={`flex-div ${themeMode === "dark" ? "dark" : "light"}`}>
+          <div className="nav-left flex-div ">
+            <img
+              className="menu-icon"
+              onClick={() => setSideBar((prev) => !prev)}
+              src={menu_icon}
+              alt="Menu Icon"
+            />
+            <Link to="/">
+              <img className="logoB" src={logo} alt="Logo" />
+            </Link>
+          </div>
+          <div className="menu-phone">
+            <i className="ri-search-line"></i>
+            <i
+              className="ri-menu-3-line"
+              onClick={() => setSideBarMobile((prev) => !prev)}
+            ></i>
+          </div>
+        </nav>
+
+        {sideBarMobile && (
+          <div className="sideBarMob">
+            <ul>
+              <li onClick={() => setShowPopupPhone((prev) => !prev)}>USER</li>
+              <li onClick={toggleTheme}>
+                {themeMode === "dark" ? "Light Mode" : "Dark Mode"}
+              </li>
+              <li onClick={() => handleUploadVideo()}>Upload Video</li>
+            </ul>
+            {showPopupPhone && (
+              <div
+                className={`${
+                  themeMode === "dark" ? "user-popupD" : "user-popup"
+                } show`}
+              >
+                <ul>
+                  <li onClick={() => setShowChangePassword(true)}>
+                    Change Password
+                  </li>
+                  <li onClick={() => setShowUpdateDetails(true)}>
+                    Update Account Details
+                  </li>
+                  <li onClick={() => setShowUpdateAvatar(true)}>
+                    Update Avatar
+                  </li>
+                  <li onClick={() => setShowUpdateCover(true)}>
+                    Update Cover Image
+                  </li>
+                  <li
+                    className="logout"
+                    onClick={() => setShowConfirmLogout(true)}
+                  >
+                    Logout
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {showUploadOptions && (
+          <div
+            className={`${
+              themeMode === "dark" ? "upload-optionsD" : "upload-options"
+            }`}
+          >
+            <button onClick={handleUploadVideo}>Upload Video</button>
+          </div>
+        )}
+        {showChangePassword && (
+          <div className="overlay">
+            <div className="change-password-modal">
+              <h2>Change Password</h2>
+              {message.text && (
+                <p
+                  className={
+                    message.type === "error"
+                      ? "error-message"
+                      : "success-message"
+                  }
+                >
+                  {message.text}
+                </p>
+              )}
+              <form>
+                <input
+                  type="password"
+                  placeholder="Old Password"
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                />
+                <input
+                  type="password"
+                  placeholder="New Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <div className="modal-buttons">
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => setShowChangePassword(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="change-btn"
+                    onClick={handleChangePassword}
+                    disabled={loading}
+                  >
+                    {loading ? "Changing..." : "Change"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {showUpdateDetails && (
+          <div className="overlay">
+            <div className="update-details-modal">
+              <h2>Update Account Details</h2>
+              {message.text && (
+                <p
+                  className={
+                    message.type === "error"
+                      ? "error-message"
+                      : "success-message"
+                  }
+                >
+                  {message.text}
+                </p>
+              )}
+              <form>
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={newFullName}
+                  onChange={(e) => setNewFullName(e.target.value)}
+                />
+                <div className="modal-buttons">
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => setShowUpdateDetails(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="change-btn"
+                    onClick={handleChangeAccountDetails}
+                    disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {showUpdateAvatar && (
+          <div className="overlay">
+            <div className="update-avatar-modal">
+              <h2>Update Avatar</h2>
+              {message.text && (
+                <p
+                  className={
+                    message.type === "error"
+                      ? "error-message"
+                      : "success-message"
+                  }
+                >
+                  {message.text}
+                </p>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setNewAvatar(e.target.files[0])}
+              />
+              <div className="modal-buttons">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => setShowUpdateAvatar(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="change-btn"
+                  onClick={handleChangeAvatar}
+                  disabled={loading}
+                >
+                  {loading ? "Updating..." : "Update"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showUpdateCover && (
+          <div className="overlay">
+            <div className="update-avatar-modal">
+              <h2>Update Cover Image</h2>
+              {message.text && (
+                <p
+                  className={
+                    message.type === "error"
+                      ? "error-message"
+                      : "success-message"
+                  }
+                >
+                  {message.text}
+                </p>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setNewCover(e.target.files[0])}
+              />
+              <div className="modal-buttons">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => setShowUpdateCover(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="change-btn"
+                  onClick={handleChangeCoverImg}
+                  disabled={loading}
+                >
+                  {loading ? "Updating..." : "Update"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showConfirmLogout && (
+          <div className="overlay">
+            <div className="update-avatar-modal ">
+              <h2>Are you sure you want to logout?</h2>
+              <div className="modal-buttons">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => setShowConfirmLogout(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="logout-btn"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showForm && (
+          <div className="overlay">
+            <div className="upload-container">
+              <button className="close-btn" onClick={() => setShowForm(false)}>
+                ✖
+              </button>
+              <h2 className="upload-title">Upload Video</h2>
+              <form className="upload-form">
+                <input
+                  type="text"
+                  placeholder="Title"
+                  className="input-field"
+                  onChange={(e) => setTitleUpload(e.target.value)}
+                />
+                <textarea
+                  placeholder="Description"
+                  className="input-field textarea"
+                  onChange={(e) => setDescriptionUpload(e.target.value)}
+                ></textarea>
+                <input
+                  type="file"
+                  accept="video/*"
+                  className="input-file"
+                  onChange={(e) => setVideoUpload(e.target.files[0])}
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="input-file"
+                  onChange={(e) => setThumbnailUpload(e.target.files[0])}
+                />
+                <button className="upload-btn" onClick={handleAddVideo}>
+                  Upload
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <>
-      <nav className={`flex-div ${themeMode === "dark" ? "dark" : "light"}`.trim()}>
+      <nav
+        className={`flex-div ${themeMode === "dark" ? "dark" : "light"}`.trim()}
+      >
         {/* Left Section */}
         <div className="nav-left flex-div">
           <img
@@ -256,7 +583,7 @@ const NAV_HEADER = ({ setSideBar }) => {
             alt="Menu Icon"
           />
           <Link to="/">
-            <img className="logo" src={logo} alt="Logo" />
+            <img className="logoB" src={logo} alt="Logo" />
           </Link>
         </div>
 
@@ -284,6 +611,7 @@ const NAV_HEADER = ({ setSideBar }) => {
           <img
             src={themeMode === "dark" ? Light : DarkMode}
             alt="DarkMode"
+            className="Dark_icon"
             onClick={toggleTheme}
           />
 
@@ -324,6 +652,7 @@ const NAV_HEADER = ({ setSideBar }) => {
           )}
         </div>
       </nav>
+
       {showUploadOptions && (
         <div
           className={`${
@@ -525,7 +854,6 @@ const NAV_HEADER = ({ setSideBar }) => {
           </div>
         </div>
       )}
-      
 
       {showForm && (
         <div className="overlay">
@@ -571,8 +899,6 @@ const NAV_HEADER = ({ setSideBar }) => {
       )}
     </>
   );
-
-
 };
 export const handle = (e) => {
   exportedValue = e;

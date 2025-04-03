@@ -63,7 +63,7 @@ const SubscribedFeed = ({ sideBar, category, setCategory }) => {
         category={category}
         setCategory={setCategory}
       />
-      <div className={`feed ${themeMode === "dark" ? "dark" : ""}`}>
+      <div className={`feedH ${themeMode === "dark" ? "dark" : ""}`}>
         {videos.length > 0
           ? videos.map((video) => (
               <Link
@@ -95,7 +95,7 @@ const SubscribedFeed = ({ sideBar, category, setCategory }) => {
                         alt="chn-img"
                       />
                     </div>
-                    <div>
+                    <div className="Width-det">
                       <h2 className="truncate">{video.title}</h2>
                       <h3 className="truncate">{video.more[0] || "Unknown"}</h3>
                       <p>

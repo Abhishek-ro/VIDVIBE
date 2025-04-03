@@ -16,7 +16,7 @@ const Feed = ({ category }) => {
   const [loading, setLoading] = useState(false);
   const observerRef = useRef(null);
   const limit = 16;
-  const {themeMode} = useTheme();
+  const { themeMode } = useTheme();
   const fetchVideos = useCallback(
     async (pageNumber = 0, reset = false) => {
       if (!hasMore || loading) return;
@@ -35,22 +35,19 @@ const Feed = ({ category }) => {
           videoData = subRes?.data?.data || [];
         }
 
-      
-
         if (videoData.length === 0) {
           setHasMore(false);
           return;
         }
 
         setHasMore(videoData.length >= limit);
-       
-        // Handle API failures gracefully
+
+      
         const updatedVideos = await Promise.all(
-          
           videoData.map(async (video) => {
             try {
               const userRes = await getUsernameById(video.owner);
-              
+
               return {
                 ...video,
                 username: userRes?.data?.username?.username || "Unknown",
@@ -64,8 +61,6 @@ const Feed = ({ category }) => {
             }
           })
         );
-
-        
 
         setVideos((prev) =>
           reset ? updatedVideos : [...prev, ...updatedVideos]
@@ -89,7 +84,6 @@ const Feed = ({ category }) => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-
   useEffect(() => {
     setVideos([]);
     setPage(0);
@@ -106,17 +100,15 @@ const Feed = ({ category }) => {
       if (entries[0].isIntersecting) fetchVideos(page);
     });
 
-    const lastVideo = document.querySelector(".feed .card:last-child");
+    const lastVideo = document.querySelector(".feedH .card:last-child");
     if (lastVideo) observer.observe(lastVideo);
     observerRef.current = observer;
 
     return () => observer.disconnect();
   }, [videos, hasMore, loading, fetchVideos]);
 
-
-
   return (
-    <div className={`feed ${themeMode === "dark" ? "dark" : "light"}`}>
+    <div className={`feedH ${themeMode === "dark" ? "dark" : "light"}`}>
       {videos.map((video) => (
         <Link
           to={`/video/get/${video._id}`}
@@ -144,11 +136,11 @@ const Feed = ({ category }) => {
                 <img
                   src={video.more[1]}
                   className="img-pro"
-                  style={{ height: "32px", width: "32px" }}
+                  
                   alt="chn-img"
                 />
               </div>
-              <div>
+              <div className="Width-det">
                 <h2 className="truncate">
                   {video.title.length > 43
                     ? video.title.substring(0, 40) + "..."

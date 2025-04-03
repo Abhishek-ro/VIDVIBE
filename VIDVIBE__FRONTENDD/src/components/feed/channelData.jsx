@@ -68,7 +68,7 @@ const ChannelData = () => {
   console.log(videos);
 
   return (
-    <div className="feed">
+    <div className="feedH">
       {videos.map((video) => (
         <Link
           to={`/video/get/${video._id}`}
@@ -92,7 +92,7 @@ const ChannelData = () => {
                   alt="chn-img"
                 />
               </div>
-              <div>
+              <div className="Width-det">
                 <h2 className="truncate">{video.title}</h2>
                 <h3 className="truncate">{video.more[0] || "Unknown"}</h3>
                 <p>
