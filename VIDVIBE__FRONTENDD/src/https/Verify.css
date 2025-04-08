@@ -1,0 +1,49 @@
+/* VerificationPage.css */
+.verification-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.verification-heading {
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.verification-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.verification-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.verification-status {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.resend-link {
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.b p{
+
+  color: #ffffff;
+}

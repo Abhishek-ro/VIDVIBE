@@ -1,3 +1,17 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #000;
+  min-height: 100vh;
+}
+
+/* Autofill Fix */
 .input-label input:-webkit-autofill,
 .input-label input:-webkit-autofill:hover,
 .input-label input:-webkit-autofill:focus,
@@ -8,170 +22,266 @@
   transition: background-color 5000s ease-in-out 0s;
 }
 
-* {
-  margin: 0px;
-  padding: 0px;
-}
-
+/* Main Layout */
 .Auth_main {
   display: flex;
   height: 100vh;
-  background-color: #fff;
+  min-height: 100vh;
 }
+
+/* Left Side */
 .left_main_image_div {
-  height: 100vh;
+  position: relative;
   width: 50%;
   background-image: url("../assets/LEFT_IMG.jpg");
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 }
 
 .black_overlayer {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  width: inherit;
+  background-color: rgba(0, 0, 0, 0.65);
   z-index: 1;
 }
+
 .auth_quote {
   z-index: 2;
   position: absolute;
-  top: 85%;
-  left: 2%;
-  width: inherit;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
+  bottom: 5%;
+  left: 5%;
+  right: 5%;
+  font-size: 1.6rem;
+  font-weight: 600;
   color: white;
+  text-align: center;
+  line-height: 1.6;
 }
 
 .quote_owner {
-  z-index: 2;
-  position: absolute;
-  margin-top: 1%;
-  left: 4%;
-  width: inherit;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  color: whitesmoke;
+  display: block;
+  margin-top: 10px;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #ccc;
 }
 
+/* Right Side */
 .right_side_auth {
-  min-height: 100vh;
-  max-height: 100vh;
   width: 50%;
   background-color: #1a1a1a;
-}
-
-.logo_col {
-  height: 15%;
-  padding-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2;
-  background-color: #1f1f1f;
+  padding: 40px 20px;
+  overflow-y: auto;
+  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Logo Section */
+.logo_col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .logo {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .brandName {
-  font-family: "Courier New", Courier, monospace;
-  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 28px;
   color: #f5f5f5;
-  margin-top: 1%;
 }
 
+/* Title */
 .register_user_title {
-  width: inherit;
-  text-align: center;
   color: #f5f5f5;
-  margin-top: 3%;
-  font-size: 40px;
+  font-size: 30px;
+  margin: 20px 0;
+  text-align: center;
 }
 
-.para {
-  color: #ababab;
-}
-.acc_exist > a {
-  text-decoration: none;
-}
-
-.acc_exist > a:hover {
-  text-decoration: underline;
-}
-
-.acc_exist {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  font-size: 1.1rem;
-}
-
-.link-para {
-  color: rgba(255, 255, 0, 0.4);
-}
+/* Input Section */
 .all-input-box {
-  min-height: inherit;
-  padding-top: 5%;
+  width: 100%;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  height: inherit;
-  overflow: hidden;
+  gap: 18px;
 }
 
 .label-name {
   color: #ababab;
   font-size: 14px;
-  margin-bottom: 5px;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
+  align-self: flex-start;
 }
 
 .input-label {
+  width: 100%;
   display: flex;
   align-items: center;
-  width: 80%;
-  max-width: 400px;
   border-radius: 8px;
-  padding: 10px;
-  background-color: #1f1f1f;
-  margin-bottom: 2%;
+  padding: 12px 16px;
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  transition: background-color 0.2s ease;
+}
+
+.input-label:hover {
+  background-color: #333;
 }
 
 .input-label input {
-  width: 100%;
+  flex: 1;
   background: transparent;
   border: none;
   outline: none;
   color: white;
   font-size: 16px;
-  padding: 8px;
 }
 
+/* Buttons */
 button {
-  padding: 10px 20px;
+  width: 100%;
+  max-width: 420px;
+  padding: 12px 20px;
   border: none;
-  background-color: red;
+  background-color: #e50914;
   color: white;
-  font-size: 16px;
-  border-radius: 5px;
+  font-size: 17px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
-  margin-bottom: 10px;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  background-color: darkred;
+  background-color: #ff1f1f;
+  transform: scale(1.02);
+}
+
+/* Account Toggle */
+.acc_exist {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.para {
+  color: #ababab;
+}
+
+.link-para {
+  color: rgba(255, 255, 0, 0.6);
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  transition: text-decoration 0.2s ease;
+}
+
+.link-para:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Media Queries */
+@media screen and (max-width: 1024px) {
+  .register_user_title {
+    font-size: 28px;
+  }
+
+  .auth_quote {
+    font-size: 1.3rem;
+  }
+
+  .quote_owner {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .Auth_main {
+    flex-direction: column;
+  }
+
+  .left_main_image_div {
+    display: none;
+  }
+
+  .right_side_auth {
+    width: 100%;
+    padding: 25px;
+    box-shadow: none;
+  }
+
+  .logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .brandName {
+    font-size: 22px;
+  }
+
+  .register_user_title {
+    font-size: 24px;
+    margin-top: 15px;
+  }
+
+  .input-label {
+    width: 90%;
+  }
+
+  button {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .auth_quote {
+    font-size: 1.1rem;
+    padding: 0 10px;
+  }
+
+  .quote_owner {
+    font-size: 0.9rem;
+  }
+
+  .register_user_title {
+    font-size: 20px;
+  }
+
+  .logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .brandName {
+    font-size: 18px;
+  }
+
+  .input-label {
+    padding: 10px 12px;
+  }
+
+  button {
+    font-size: 15px;
+  }
+
+  .acc_exist {
+    font-size: 0.9rem;
+  }
 }

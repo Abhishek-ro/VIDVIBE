@@ -55,6 +55,13 @@ const userSchema = new Schema(
       default: 0, // ✅ Default count is 0
     },
     subscriptions: [{ type: Schema.Types.ObjectId, ref: "User" }], 
+    isVerified:{
+      type: Boolean,
+      default: false,
+    },
+    verificationCode:{
+      type: String,
+    },
   },
   {
     timestamps: true,

@@ -17,9 +17,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export const accessToken = (userId) =>
+  api.post("/api/v1/user/generate-access-token", { userId });
+
+export const login = (data) => api.post("/api/v1/user/login", data);
 export const register = (data) => api.post("/api/v1/user/register", data);
 export const getUserData = () => api.get("/api/v1/user/current-user");
-
+export const verifyEmail = (data) =>
+  api.post("/api/v1/user/verify-email", data);
 // 🔹 Videos API
 export const getVideos = (limit, offset) =>
   api.get(`/api/v1/video/get-all?limit=${limit}&offset=${offset}`);

@@ -71,30 +71,33 @@ function SearchResults() {
                       ? video.title.substring(0, 77) + "..."
                       : video.title}
                   </h3>
-                  <p
-                    className={
-                      themeMode === "dark" ? "video-channelD" : "video-channel"
-                    }
-                  >
-                    {video.views} views •{" "}
-                    {formatDistanceToNow(new Date(video.createdAt), {
-                      addSuffix: true,
-                    })}
-                  </p>
+
                   <div className="channel-info">
                     <img
                       src={video.more[1]}
                       alt="Channel-logo"
                       className="channel-logo"
                     />
+
                     <span>{video.more[0] || "Unknown Channel"}</span>
+                    <p
+                      className={
+                        themeMode === "dark"
+                          ? "video-channelD"
+                          : "video-channel"
+                      }
+                    >
+                      {video.views} views •{" "}
+                      {formatDistanceToNow(new Date(video.createdAt), {
+                        addSuffix: true,
+                      })}
+                    </p>
                   </div>
                   <p
                     className={
                       themeMode === "dark" ? "video-detailsD" : "video-details"
                     }
                   >
-                    
                     {video.description.length > 110
                       ? video.description.substring(0, 107) + "..."
                       : video.description}

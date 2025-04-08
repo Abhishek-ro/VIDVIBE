@@ -10,7 +10,7 @@ import {
   deleteVideo,
 } from "../../API/index.js";
 import { formatDistanceToNow } from "date-fns";
-import option from "../../assets/options.png";
+import dots from "../../assets/dots.png";
 import useTheme from "../../contexts/theme.js";
 
 const UserLibrary = () => {
@@ -187,7 +187,7 @@ const UserLibrary = () => {
                     {title === "Your Videos" && (
                       <div className="option-container">
                         <img
-                          src={option}
+                          src={dots}
                           alt="Options"
                           className="option-button"
                           onClick={() =>

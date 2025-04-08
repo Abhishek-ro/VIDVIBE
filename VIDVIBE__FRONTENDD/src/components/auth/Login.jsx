@@ -1,7 +1,7 @@
 import "../../pages/Auth.css";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../../https/index.js";
+import { login } from "../../API/index.js";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 

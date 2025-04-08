@@ -19,8 +19,9 @@ import SearchResults from "./components/navBar/SearchedV.jsx";
 import {ThemeProvider} from "./contexts/theme.js"
 import YourVideos from "./components/user/YourVideos.jsx";
 import LikedVideo from "./components/user/LikedVideo.jsx";
+import VerificationPage from "./https/Verify.jsx";
 function App() {
-  const [sideBar, setSideBar] = useState(true);
+  const [sideBar, setSideBar] = useState(false);
   const location = useLocation();
    const [themeMode, setThemeMode] = useState("dark");
 
@@ -37,6 +38,7 @@ function App() {
 
         <Routes>
           <Route path="/auth" element={<Auth />} />
+          <Route path="verify" element={<VerificationPage />} />
           <Route path="/" element={<Home sideBar={sideBar} />}>
             <Route
               path="subscribed"

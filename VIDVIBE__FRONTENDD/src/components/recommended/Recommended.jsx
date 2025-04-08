@@ -91,6 +91,7 @@ const Recommended = () => {
           className="side-video-list"
         >
           <img src={video.thumbnail} alt="Video Thumbnail" />
+          
           <div className={`${themeMode === "dark" ? "vid-infoD" : "vid-info"}`}>
             <h4>{video.title}</h4>
             <span
@@ -99,7 +100,7 @@ const Recommended = () => {
               }`}
             >
               {video.username}
-            </span>
+            </span> 
             <p className={`${themeMode === "dark" ? "vid-infoD" : "vid-info"} para`}>
               {video.views} Views • {timeAgo(video.createdAt)}
             </p>

@@ -12,6 +12,8 @@ import {
   getWatchHistory,
   getUsernameById,
   getUserVideos,
+  verifyEmail,
+  generateAccessAndRefreshToken,
 } from "../controllers/user.controllers.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middlewares.js";
@@ -33,7 +35,9 @@ router.route("/register").post(
   registerUser
 );
 
+router.route("/verify-email").post(verifyEmail);
 
+router.route("/generate-access-token").post(generateAccessAndRefreshToken);
 
 router.route("/getUsernameById/:id").get(getUsernameById);
 router.route("/login").post(loginUser);

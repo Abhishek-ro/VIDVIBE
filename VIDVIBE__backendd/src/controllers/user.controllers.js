@@ -8,9 +8,11 @@ import { WatchHistory } from "../models/watch_history.models.js";
 import {
   uploadOnCloudinary,
   deleteFromCloudinary,
+  uploadOnCloudinaryDef,
 } from "../utils/cloudinary.js";
 import { deleteFileFromLocalPath } from "../middlewares/multer.middlewares.js";
-
+import { sendVerificationCode, welcomeEmail } from "../middlewares/email.js";
+import path from "path";
 import jwt from "jsonwebtoken";
 import { mongoose } from "mongoose";
 
@@ -24,7 +26,11 @@ const generateAccessAndRefreshToken = async (userId) => {
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
   } catch (error) {
-    throw new APIERROR(500, "Something went wrong while generating tokens!!!",error);
+    throw new APIERROR(
+      500,
+      "Something went wrong while generating tokens!!!",
+      error
+    );
   }
 };
 
@@ -42,31 +48,47 @@ const registerUser = asyncHandler(async (req, res) => {
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
-
   if (existedUser) {
     deleteFileFromLocalPath(req.files?.avatar?.[0]?.path);
     deleteFileFromLocalPath(req.files?.coverImage?.[0]?.path);
     throw new APIERROR(403, "User Already Exist!!!");
   }
-
-  const avatarLocalPath = req.files?.avatar?.[0]?.path;
-  const coverLocalPath = req.files?.coverImage?.[0]?.path;
-
-  if (!avatarLocalPath) {
-    throw new APIERROR(404, "Avatar Not Found!!!");
-  }
   let avatar = "";
+  let avatarLocalPath = req.files?.avatar?.[0]?.path;
+  const coverLocalPath = req.files?.coverImage?.[0]?.path;
+  console.log(avatarLocalPath, coverLocalPath);
+  let avatarLocalPathDef = "";
+  if (!avatarLocalPath) {
+    avatarLocalPathDef = path.resolve("src/Img/user.png");
+    try {
+      avatar = await uploadOnCloudinaryDef(avatarLocalPathDef);
+    } catch (error) {
+      throw new APIERROR(
+        500,
+        "Something went Wrong while uploading Avatar!!!",
+        error
+      );
+    }
+  }
+
   try {
-    avatar = await uploadOnCloudinary(avatarLocalPath);
+    if (avatarLocalPathDef === "")
+      avatar = await uploadOnCloudinary(avatarLocalPath);
   } catch (error) {
-    throw new APIERROR(500, "Something went Wrong while uploading Avatar!!!",error);
+    throw new APIERROR(
+      500,
+      "Something went Wrong while uploading Avatar!!!",
+      error
+    );
   }
 
   let coverImage = "";
   if (coverLocalPath) {
     coverImage = await uploadOnCloudinary(coverLocalPath);
   }
-
+  const verificationCode = Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
   try {
     const user = await User.create({
       username,
@@ -75,19 +97,36 @@ const registerUser = asyncHandler(async (req, res) => {
       fullName,
       email,
       password,
+      verificationCode,
     });
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+      user._id
+    );
     const createdUser = await User.findById(user._id).select(
       "-password -refreshToken"
     );
 
+    sendVerificationCode(user.email, verificationCode);
 
     if (!createdUser._id) {
       throw new APIERROR(500, "Something went Wrong while registering user!!!");
     }
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    };
 
     return res
       .status(200)
-      .json(new API(201, createdUser, "User Register Successfully!!"));
+      .cookie("refreshToken", refreshToken, options)
+      .cookie("accessToken", accessToken, options)
+      .json(
+        new API(
+          201,
+          { user: createdUser, accessToken, refreshToken },
+          "User Register Successfully!!"
+        )
+      );
   } catch (error) {
     console.log(error);
     if (avatar) await deleteFromCloudinary(avatar.public_id);
@@ -98,6 +137,47 @@ const registerUser = asyncHandler(async (req, res) => {
       "Something went wrong will uploading the images and images where deleted!!"
     );
   }
+});
+
+const verifyEmail = asyncHandler(async (req, res) => {
+  const { email, code } = req.body;
+  console.log(code);
+  if (!code) throw new APIERROR(400, "Verification Code Required!!!");
+  const user = await User.findOne({
+    email,
+  });
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  if (!user) throw new APIERROR(404, "User Not Found!!!");
+  if (user.isVerified) throw new APIERROR(400, "User Already Verified!!!");
+  if (user.verificationCode !== code)
+    throw new APIERROR(400, "Invalid Verification Code!!!");
+  user.isVerified = true;
+  user.verificationCode = null;
+
+  await welcomeEmail(user.email, user.username);
+  const registeredUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  };
+
+  await user.save({ validateBeforeSave: false });
+  return res
+    .status(200)
+    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .json(
+      new API(
+        200,
+        { user: registeredUser, accessToken, refreshToken },
+        "User Verified Successfully!!!"
+      )
+    );
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -149,10 +229,9 @@ const logoutUser = asyncHandler(async (req, res) => {
     throw new APIERROR(401, "User Already Logged Out!!!");
 
   try {
-    
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { $set: { refreshToken: null } }, 
+      { $set: { refreshToken: null } },
       { new: true }
     );
 
@@ -176,9 +255,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  
   const incomeingRefreshToken = await (req.cookies?.refreshToken ||
     req.body?.refreshToken);
 
@@ -221,7 +298,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = await req.body;
 
- 
   if (!oldPassword || !newPassword)
     throw new APIERROR(400, "Old Password and New Password Required!!!");
 
@@ -247,11 +323,10 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req, res) => {
   try {
     const { fullName } = req.body;
-    if (!fullName)
-      throw new APIERROR(400, "Full Name Required!!!");
+    if (!fullName) throw new APIERROR(400, "Full Name Required!!!");
     const user = await User.findByIdAndUpdate(req.user?._id, {
       $set: {
-        fullName
+        fullName,
       },
     }).select("-password -refreshToken");
     if (!user) throw new APIERROR(404, "User Not Found!!!");
@@ -275,7 +350,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     },
   }).select("-password -refreshToken");
   if (!user) throw new APIERROR(404, "User Not Found!!!");
-  
+
   return res
     .status(200)
     .json(new API(200, user, "User Avatar Updated Successfully!!!"));
@@ -375,14 +450,16 @@ const getWatchHistory = asyncHandler(async (req, res, next) => {
   if (!userId) return next(new APIERROR(401, "Unauthorized Access!!!"));
 
   let watchHistory = await WatchHistory.findOne({ user: userId })
-    .populate("videos.video", "title thumbnail duration views createdAt username")
+    .populate(
+      "videos.video",
+      "title thumbnail duration views createdAt username"
+    )
     .sort({ "videos.watchedAt": -1 });
-  console.log('herhehheheh',watchHistory);
+  console.log("herhehheheh", watchHistory);
   if (!watchHistory) {
     watchHistory = await WatchHistory.create({ user: userId, videos: [] });
   }
 
-  
   return res.status(200).json(
     new API(200, "Watch history retrieved", {
       history: watchHistory.videos || [],
@@ -410,9 +487,6 @@ const getUserVideos = asyncHandler(async (req, res, next) => {
     .json(new API(200, "User videos fetched successfully", { videos }));
 });
 
-
-
-
 // get username by its id
 
 const getUsernameById = asyncHandler(async (req, res) => {
@@ -423,13 +497,11 @@ const getUsernameById = asyncHandler(async (req, res) => {
   const user = await User.findById(id);
   if (!user) throw new APIERROR(404, "User Not Found!!!");
 
-
-  res.status(200).json({ username: user }); 
+  res.status(200).json({ username: user });
 });
 
-
-
 export {
+  generateAccessAndRefreshToken,
   registerUser,
   loginUser,
   refreshAccessToken,
@@ -443,6 +515,7 @@ export {
   getWatchHistory,
   getUsernameById,
   getUserVideos,
+  verifyEmail,
 };
 
 /*

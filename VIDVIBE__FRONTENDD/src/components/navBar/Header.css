@@ -5,6 +5,12 @@
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
+.X {
+  position: fixed;
+  right: 9%;
+  top: 1.2%;
+  font-weight: 300;
+}
 
 nav {
   padding: 12px 3%;
@@ -17,7 +23,11 @@ nav {
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
-
+  .logoB {
+  width: 110px;
+  height: 37px;
+  object-fit: cover;
+}
 /* Left Section */
 .menu-icon {
   width: 24px;
@@ -219,6 +229,37 @@ nav {
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-in-out;
 }
+.update-details-modalD {
+  background: #313131;
+  padding: 25px;
+  border-radius: 10px;
+  width: 350px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.update-details-modalD h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  text-align: center;
+  color: #fff;
+}
+
+.update-details-modalD input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #fff;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.update-details-modalD input:focus {
+  border-color: #007bff;
+  outline: none;
+}
 
 .update-details-modal h2 {
   margin-bottom: 15px;
@@ -273,6 +314,41 @@ nav {
 }
 
 .change-password-modal input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.change-password-modalD {
+  background: #313131;
+  padding: 30px;
+  border-radius: 10px;
+  width: 380px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.change-password-modalD h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #f1eeee;
+  font-weight: 600;
+}
+
+/* Input Fields */
+.change-password-modalD input {
+  width: 90%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #646464;
+  border-radius: 5px;
+  outline: none;
+  color: wheat;
+  font-size: 15px;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.change-password-modalD input:focus {
   border-color: #007bff;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
@@ -349,10 +425,25 @@ nav {
   animation: fadeIn 0.3s ease-in-out;
 }
 
+.update-avatar-modalD {
+  background: #313131;
+  padding: 25px;
+  width: 370px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
 /* Modal Title */
 .update-avatar-modal h2 {
   font-size: 22px;
   color: #333;
+  margin-bottom: 15px;
+}
+
+.update-avatar-modalD h2 {
+  font-size: 22px;
+  color: #fff;
   margin-bottom: 15px;
 }
 
@@ -362,6 +453,16 @@ nav {
   padding: 10px;
   margin: 15px 0;
   border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.update-avatar-modalD input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin: 15px 0;
+  color: #fff;
+  border: 1px solid #575757;
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
@@ -439,10 +540,11 @@ nav {
   z-index: 1000;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
+
 .upload-optionsD {
   position: fixed;
-  top: 50px;
-  right: 200px;
+  top: 5vw;
+  right: 12vw;
   background: #1110106e; /* Dark background */
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
   border-radius: 10px;
@@ -453,6 +555,39 @@ nav {
   width: 180px;
   z-index: 1000;
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media screen and (max-width: 1380px) {
+  .upload-options {
+    position: fixed;
+    top: calc(100vh - 40px);
+    right: 230px;
+    background: rgba(255, 152, 138, 0.363); /* Dark background */
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180px;
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .upload-optionsD {
+    position: fixed;
+    top: 80px;
+    right: 14vw;
+    background: #1110106e; /* Dark background */
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180px;
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
 }
 
 .upload-options button {
@@ -513,9 +648,19 @@ nav {
 }
 
 .upload-container {
+  position: relative;
   background: white;
   padding: 20px;
-  width: 350px;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+.upload-containerD {
+  position: relative;
+  background: #111010;
+  padding: 20px;
+  width: 400px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -527,6 +672,11 @@ nav {
   margin-bottom: 15px;
   color: #333;
 }
+.upload-titleD {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #fdfdfd;
+}
 
 /* Input fields */
 .input-field {
@@ -536,6 +686,15 @@ nav {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
+}
+.input-fieldD {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #525252;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #ccc;
 }
 
 .textarea {
@@ -551,6 +710,15 @@ nav {
   border: none;
   background: #f9f9f9;
   cursor: pointer;
+}
+.input-fileD {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: none;
+  background: #393939;
+  cursor: pointer;
+  color: #ccc;
 }
 
 /* Upload button */
@@ -570,16 +738,6 @@ nav {
   background: #0056b3;
 }
 
-.upload-container {
-  position: relative;
-  background: white;
-  padding: 20px;
-  width: 400px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  text-align: center; /* Centers the title */
-}
-
 .close-btn {
   position: absolute;
   height: 10px;
@@ -594,7 +752,21 @@ nav {
   transition: color 0.3s ease-in-out;
 }
 
-.close-btn:hover {
+.close-btnD {
+  position: absolute;
+  height: 10px;
+  top: 3px;
+  right: 3px;
+  background: none;
+  font-size: 15px;
+  border: none;
+  font-weight: bold;
+  color: whitesmoke;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.close-btn:hover .close-btnD:hover {
   color: gray;
   background: none;
 }
@@ -617,6 +789,11 @@ nav.dark {
 }
 
 @media screen and (max-width: 1279px) {
+    .logoB {
+  width: 100px;
+  height: 33px;
+  object-fit: cover;
+}
   .menu-icon {
     width: 20px;
     margin-left: -17px;
@@ -627,8 +804,14 @@ nav.dark {
     width: 109.1px;
   }
 }
+ 
 
 @media screen and (max-width: 936px) {
+   .logoB {
+  width: 91px;
+  height: 30px;
+  object-fit: cover;
+}
   .nav-right .user-icon {
     height: 33.3px;
     width: 33.3px;
@@ -639,9 +822,24 @@ nav.dark {
 }
 
 @media screen and (max-width: 846px) {
+   .logoB {
+  width: 91px;
+  height: 31px;
+  object-fit: cover;
+}
   .nav-right .user-icon {
     height: 28px;
     width: 28px;
+  }
+  .upload-options {
+    position: fixed;
+    top: 65px;
+    right: 12vw;
+  }
+  .upload-optionsD {
+    position: fixed;
+    top: 65px;
+    right: 12vw;
   }
   .menu-icon {
     width: 24px;
@@ -674,6 +872,11 @@ nav.dark {
 }
 
 @media screen and (max-width: 762px) {
+   .logoB {
+  width: 91px;
+  height: 31px;
+  object-fit: cover;
+}
   .nav-right .user-icon {
     height: 25px;
     width: 25px;
@@ -732,12 +935,22 @@ nav.dark {
 }
 
 @media screen and (max-width: 715px) {
+   .logoB {
+  width: 91px;
+  height: 31px;
+  object-fit: cover;
+}
   .nav-middle .search-box input {
     width: 330px;
   }
 }
 
 @media screen and (max-width: 642px) {
+   .logoB {
+  width: 91px;
+  height: 31px;
+  object-fit: cover;
+}
   .nav-middle .search-box input {
     width: 300px;
   }
@@ -758,6 +971,11 @@ nav.dark {
 }
 
 @media screen and (max-width: 602px) {
+   .logoB {
+  width: 91px;
+  height: 31px;
+  object-fit: cover;
+}
   .nav-middle .search-box input {
     width: 250px;
   }
@@ -772,9 +990,9 @@ nav.dark {
     display: none;
   }
   nav {
-  position: fixed;
-  width: 100vw;
-}
+    position: fixed;
+    width: 100vw;
+  }
   .menu-phone {
     display: flex;
     height: 100%;
@@ -802,8 +1020,7 @@ nav.dark {
   right: 0;
   width: 30vw;
   height: 100vh;
-  background-color: rgba(17, 16, 16, 0.507);
-  backdrop-filter: blur(10px);
+  background-color: rgba(17, 16, 16, 0.947);
   color: white;
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease-in-out;
@@ -828,7 +1045,6 @@ nav.dark {
 
 .sideBarMob li:hover {
   background: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
 }
 
 .sideBarMob li span {
@@ -836,60 +1052,391 @@ nav.dark {
   opacity: 0.8;
 }
 
-
-
 @media screen and (max-width: 556px) {
-  .logoB {
-    width: 91px;
+  .user-popupD .user-popup {
+    display: none;
   }
+  .upload-options,
+  .upload-optionsD {
+    display: none;
+  }
+  .update-avatar-modalD h2 {
+    font-size: 3.7vw;
+    color: #ffffff;
+    margin-bottom: 15px;
+  }
+  .update-avatar-modalD {
+    width: 61vw;
+  }
+  .upload-container {
+    padding: 20px;
+    width: 71vw;
+    border-radius: 10px;
+  }
+
+  .change-password-modalD h2 {
+    margin-bottom: 10px;
+    font-size: 4.6vw;
+  }
+  .upload-containerD {
+    padding: 20px;
+    width: 71vw;
+  }
+
+  /* Title */
+  .upload-title {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  .upload-titleD {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #fdfdfd;
+  }
+
+  /* Input fields */
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  .input-fieldD {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #525252;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #ccc;
+  }
+
+  .textarea {
+    height: 80px;
+    resize: none;
+  }
+
+  /* File upload input */
+  .input-file {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: none;
+    background: #f9f9f9;
+    cursor: pointer;
+  }
+  .input-fileD {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: none;
+    background: #393939;
+    cursor: pointer;
+    color: #ccc;
+  }
+
+  /* Upload button */
+  .upload-btn {
+    width: 100%;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .upload-btn:hover {
+    background: #0056b3;
+  }
+
+  .close-btn {
+    position: absolute;
+    height: 10px;
+    top: 3px;
+    right: 3px;
+    background: none;
+    font-size: 15px;
+    border: none;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .close-btnD {
+    position: absolute;
+    height: 10px;
+    top: 3px;
+    right: 3px;
+    background: none;
+    font-size: 15px;
+    border: none;
+    font-weight: bold;
+    color: whitesmoke;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .close-btn:hover .close-btnD:hover {
+    color: gray;
+    background: none;
+  }
+
+   .logoB {
+  width: 91px;
+  height: 31px;
+  object-fit: cover;
+}
   .menu-icon {
     width: 14px;
     margin-left: -1px;
     margin-right: 10px;
-  } 
-  .user-popupD{
-    position: fixed;
-    right: calc(100vh - 72vh);
-    top:20px;
-    backdrop-filter: blur(10px);
-    background-color: rgba(82, 97, 144, 0.858);
   }
-  
-  .sideBarMob li{
+  .user-popupD {
+    position: fixed;
+    z-index: 1000;
+    right: 20px;
+    top: 49px;
+    backdrop-filter: blur(10px);
+    background-color: #68646475;
+  }
+
+  .sideBarMob li {
     font-size: 14px;
+    color: #ffffff;
+  }
+
+  .update-details-modal {
+    padding: 25px;
+    border-radius: 10px;
+    width: 3vw;
+  }
+  .update-details-modalD {
+    width: 60vw;
+  }
+
+  .update-details-modalD h2 {
+    margin-bottom: 15px;
+    font-size: 3.7vw;
+  }
+
+  .update-details-modalD input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 2.4vw;
+    color: #fff;
+    height: auto;
+    transition: border-color 0.2s ease-in-out;
+  }
+  .modal-buttons {
+    margin-top: 15px;
+    height: auto;
+  }
+  .update-details-modalD input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+
+  .update-details-modal h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    text-align: center;
+    color: #333;
+  }
+
+  
+
+  .update-details-modal input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.2s ease-in-out;
+  }
+
+  .update-details-modal input:focus {
+    border-color: #007bff;
+    outline: none;
   }
 }
 
-
-
 @media screen and (max-width: 500px) {
-  .logoB {
-    width: 91px;
+  .upload-container {
+    padding: 20px;
+    width: 71vw;
+    border-radius: 10px;
   }
+  .upload-containerD {
+    padding: 20px;
+    width: 71vw;
+  }
+
+  /* Title */
+  .upload-title {
+    font-size: 4vw;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  .upload-titleD {
+    font-size: 4vw;
+    margin-bottom: 15px;
+    color: #fdfdfd;
+  }
+
+  /* Input fields */
+  .input-field {
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  .input-fieldD {
+    font-size: 12px;
+    color: #ccc;
+  }
+
+  .input-file {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: none;
+    background: #f9f9f9;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .input-fileD {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: none;
+    background: #393939;
+    cursor: pointer;
+    color: #ccc;
+    font-size: 3.1vw;
+  }
+
+  /* Upload button */
+  .upload-btn {
+    width: 100%;
+    height: auto;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    transition: background 0.3s;
+  }
+
+  .upload-btn:hover {
+    background: #0056b3;
+  }
+
+  .close-btn {
+    height: 10px;
+    font-size: 13px;
+  }
+
+  .close-btnD {
+    font-size: 13px;
+  }
+
+  .close-btn:hover .close-btnD:hover {
+    color: gray;
+    background: none;
+  }
+
+  .update-details-modal {
+    width: 350px;
+  }
+
+  .update-details-modal h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+  }
+
+  .update-details-modal input {
+    font-size: 14px;
+  }
+
+  /* Centered Change Password Form */
+  .change-password-modal {
+    width: 70vw;
+  }
+
+  .change-password-modal h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+  }
+
+  .change-password-modal input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 15px;
+  }
+
+  .change-password-modalD {
+    background: #313131;
+    padding: 30px;
+    border-radius: 10px;
+    width: 70vw;
+  }
+
+  .change-password-modalD h2 {
+    margin-bottom: 5px;
+    font-size: 4.6vw;
+  }
+  .modal-buttons {
+    margin-top: 6px;
+  }
+
+  /* Input Fields */
+  .change-password-modalD input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+
+    font-size: 2.6vw;
+  }
+  .modal-buttons button {
+    font-size: 2.7vw;
+  }
+
+  .logoB {
+  width: 91px;
+  height: 31px;
+  object-fit: cover;
+}
+
   .menu-icon {
     width: 14px;
     margin-left: -1px;
     margin-right: 10px;
-  } 
-  .user-popupD{
+  }
+  .user-popupD {
     position: fixed;
-    right: calc(100vh - 72vh);
-    top:20px;
-    backdrop-filter: blur(10px);
-    background-color: rgba(82, 97, 144, 0.858);
   }
 
-  .sideBarMob{
-    width: 245px ;
-    height: 245px;
+  .sideBarMob {
+    width: 205px;
     position: fixed;
-    top:-45px;
-    right: -50px;
-    border-radius: 50%;
-    transition:step-start;
+    height: 100vh;
+    transition: step-start;
   }
-  
-  .sideBarMob li{
+
+  .sideBarMob li {
     font-size: 14px;
   }
 }

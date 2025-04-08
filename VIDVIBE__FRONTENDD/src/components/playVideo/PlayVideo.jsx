@@ -12,8 +12,8 @@ import {
   allComments,
   totalCommentNumber,
   getChannelSubscribers,
-  fetchSubscriptionStatus, // ✅ Create a new function for fetching subscription status
-  isSubscribedToggle, // ✅ This should only be used for toggling
+  fetchSubscriptionStatus,
+  isSubscribedToggle, 
 } from "../../API/index.js";
 import "./PlayVideo.css";
 import Like from "../../assets/like.png";
@@ -83,9 +83,9 @@ export const PlayVideo = () => {
         const channelRes = await getUsernameById(videoData?.owner);
         setChannel(channelRes.data.username);
 
-        // ✅ Fetch Subscription Status using a separate API function
+        
         const subscriptionRes = await fetchSubscriptionStatus(videoData?.owner);
-        setIsSubscribed(subscriptionRes?.data?.isSubscribed); // Assume API returns `true` or `false`
+        setIsSubscribed(subscriptionRes?.data?.isSubscribed);
 
         loadComments(0);
       } catch (error) {
@@ -100,11 +100,7 @@ export const PlayVideo = () => {
     try {
       const response = await isSubscribedToggle(video.owner);
       console.log("Subscription Response:", response);
-
-      // ✅ Toggle subscription status
       setIsSubscribed((prev) => !prev);
-
-      // ✅ Immediately update the subscriber count based on action
       setTotalSub((prev) => (isSubscribed ? prev - 1 : prev + 1));
     } catch (error) {
       console.error("Error toggling subscription:", error);
@@ -183,7 +179,7 @@ export const PlayVideo = () => {
 
   return (
     <div className={`${themeMode === "dark" ? "play-videoD" : "play-video"}`}>
-      <video src={video.videoFile} controls autoPlay muted></video>
+      <video src={video.videoFile} controls autoPlay></video>
       <h3>{video.title}</h3>
       <div className="play-video-info">
         <p>
@@ -232,7 +228,6 @@ export const PlayVideo = () => {
         <p>{video.description}</p>
         <hr />
         <h3>{totalCountOfComment} Comments</h3>
-
         <div className="comment-input">
           <input
             type="text"
@@ -240,14 +235,23 @@ export const PlayVideo = () => {
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
           />
-          <button onClick={handleCommentSubmit}>Comment</button>
+          <button className="Com-but" onClick={handleCommentSubmit}>
+            <div className="ma">Comment</div>
+          </button>
         </div>
 
         {allComment.map((comment) => (
           <div className="comment" key={comment._id}>
+            <img
+              src={comment?.owner?.avatar || "/default-avatar.png"}
+              alt="user-avatar"
+              className="circular-img"
+            />
             <div>
-              <img src={comment?.owner?.avatar} />
-              <h3>{comment.owner.username}</h3>
+              <h3>
+                {comment.owner.username}
+                <span> • {timeAgo(comment.createdAt)}</span>
+              </h3>
               <p>{comment.content}</p>
             </div>
           </div>

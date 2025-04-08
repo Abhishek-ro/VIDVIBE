@@ -1,6 +1,12 @@
 import "../../pages/Auth.css";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "../../API/index.js";
+import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+
 export const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -12,10 +18,39 @@ export const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const registerMutation = useMutation({
+    mutationFn: (reqData) => register(reqData),
+    onSuccess: (res) => {
+      const { message } = res.data; // Assuming your backend sends a message
+      const { email } = formData; // Get the registered email
+
+      enqueueSnackbar(
+        message ||
+          "Registration successful! Please check your email to verify your account.",
+        {
+          variant: "success",
+        }
+      );
+
+      // Store the email temporarily (you might use a different identifier)
+      localStorage.setItem("verificationEmail", email);
+
+      // Redirect to the verification page
+      navigate("/verify");
+    },
+    onError: (err) => {
+      console.log("SOMETHING'S WRONG!!!", err);
+      const errorMessage =
+        err.response?.data?.message || "Registration failed! Please try again.";
+      enqueueSnackbar(errorMessage, { variant: "error" });
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    registerMutation.mutate(formData);
   };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -65,7 +100,9 @@ export const Register = () => {
           </div>
 
           <br />
-          <button type="submit">SIGN UP</button>
+          <button type="submit" disabled={registerMutation.isPending}>
+            {registerMutation.isPending ? "Signing up..." : "Sign up"}
+          </button>
         </div>
       </form>
     </div>
