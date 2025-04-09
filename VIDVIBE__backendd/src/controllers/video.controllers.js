@@ -3,14 +3,13 @@ import { Video } from "../models/video.models.js";
 import { API } from "../utils/APIResponses.js";
 import { APIERROR } from "../utils/APIError.js";
 import { Subscription } from "../models/subscription.models.js";
-import {WatchHistory} from "../models/watch_history.models.js";
+import { WatchHistory } from "../models/watch_history.models.js";
 import {
   uploadOnCloudinary,
   deleteFromCloudinary,
 } from "../utils/cloudinary.js";
 import { deleteFileFromLocalPath } from "../middlewares/multer.middlewares.js";
 import path from "path";
-
 
 const getAllVideos = asyncHandler(async (req, res) => {
   try {
@@ -20,18 +19,17 @@ const getAllVideos = asyncHandler(async (req, res) => {
       sortBy = "createdAt",
       sortType = "desc",
     } = req.query;
-  
-    
-    const videos = await Video.find({ isPublished : true})
+
+    const videos = await Video.find({ isPublished: true })
       .sort({ [sortBy]: sortType === "asc" ? 1 : -1 })
       .skip(parseInt(offset))
-      .limit(parseInt(limit)); 
+      .limit(parseInt(limit));
 
     const totalVideos = await Video.countDocuments();
     res.status(200).json({
       success: true,
       videos,
-      hasMore: offset + limit < totalVideos, 
+      hasMore: offset + limit < totalVideos,
     });
   } catch (error) {
     res
@@ -40,47 +38,37 @@ const getAllVideos = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-const getAllHomeVideo= asyncHandler(async (req, res) => {
+const getAllHomeVideo = asyncHandler(async (req, res) => {
   try {
-    console.log("heeeeeeeeeeeeeeeeeeeeeeeee", req.user.username);
-    const videos = await Video.find({isPublished:true})
+    const videos = await Video.find({ isPublished: true });
     res.status(200).json({
       success: true,
       videos,
     });
-  
   } catch (error) {
     res
       .status(500)
       .json({ success: false, message: "Error fetching videos", error });
   }
-  
 });
 
 const publishAVideo = asyncHandler(async (req, res, next) => {
-  
-
   try {
     const { title, description } = req.body;
 
-    // Validate title and description
     if (!title || !description) {
       return next(new APIERROR(402, "Title and description are required."));
     }
 
-    // Validate files
     const videoFile = req.files?.videoFile?.[0];
     const thumbnailFile = req.files?.thumbnail?.[0];
-    
+
     if (!videoFile || !thumbnailFile) {
       deleteFileFromLocalPath(videoFile?.path);
       deleteFileFromLocalPath(thumbnailFile?.path);
       return next(new APIERROR(402, "Video and thumbnail files are required."));
     }
 
-    // Validate video file extension
     const allowedExtensions = [".mp4", ".mkv", ".webm", ".avi"];
     const videoExtension = path.extname(videoFile.path);
     if (!allowedExtensions.includes(videoExtension)) {
@@ -125,7 +113,7 @@ const publishAVideo = asyncHandler(async (req, res, next) => {
       thumbnail: thumbnailUrl.url,
       videoFile: videoUrl.url,
       owner: req.user._id,
-      more:[req.user.username, req.user.avatar],
+      more: [req.user.username, req.user.avatar],
       duration,
     });
 
@@ -140,7 +128,7 @@ const publishAVideo = asyncHandler(async (req, res, next) => {
     deleteFileFromLocalPath(thumbnailPath);
     if (videoPath) await deleteFromCloudinary(videoPath);
     if (thumbnailPath) await deleteFromCloudinary(thumbnailPath);
-    next(new APIERROR(401, "Cannot publish the video!",error));
+    next(new APIERROR(401, "Cannot publish the video!", error));
   }
 });
 
@@ -150,42 +138,33 @@ const getVideoById = asyncHandler(async (req, res, next) => {
 
   if (!userId) return next(new APIERROR(401, "Unauthorized Access!!!"));
 
-  // Find the video
   const video = await Video.findById(videoId);
   if (!video) return next(new APIERROR(404, "Video not found"));
 
-  // Find or create the user's watch history
   let watchHistory = await WatchHistory.findOne({ user: userId });
 
   if (!watchHistory) {
     watchHistory = new WatchHistory({ user: userId, videos: [] });
   }
 
-  // Find the index of the video if it exists
   const existingIndex = watchHistory.videos.findIndex(
     (v) => v.video.toString() === videoId
   );
 
   if (existingIndex !== -1) {
-    // If video exists, remove it from its current position
     const [existingVideo] = watchHistory.videos.splice(existingIndex, 1);
-    // Shift it to the front
+
     watchHistory.videos.unshift(existingVideo);
   } else {
-    // If video does not exist, add it to the front
     watchHistory.videos.unshift({ video: videoId, watchedAt: new Date() });
   }
 
-  // Save the updated history
   await watchHistory.save();
 
   res
     .status(200)
     .json(new API(200, "Video found and watch history updated", { video }));
 });
-
-
-
 
 const updateVideo = asyncHandler(async (req, res, next) => {
   try {
@@ -200,7 +179,7 @@ const updateVideo = asyncHandler(async (req, res, next) => {
     }
     console.log("Request body:", req.body);
     console.log("Request files:", req.file, req.files);
-    // Extract new values
+
     const title = req.body.title?.trim() || video.title;
     const description = req.body.description?.trim() || video.description;
     let thumbnail = video.thumbnail;
@@ -215,10 +194,8 @@ const updateVideo = asyncHandler(async (req, res, next) => {
         return next(new APIERROR(500, "Thumbnail upload failed."));
       }
 
-      // Store new thumbnail URL
       thumbnail = thumbnailUpload.url;
 
-      // Delete previous thumbnail (if exists) after successful upload
       const deletionPromises = [];
       if (video.thumbnail) {
         deletionPromises.push(deleteFromCloudinary(video.thumbnail));
@@ -229,7 +206,6 @@ const updateVideo = asyncHandler(async (req, res, next) => {
       console.log("Old thumbnail deleted.");
     }
 
-    // Update video properties
     video.title = title;
     video.description = description;
     video.thumbnail = thumbnail;
@@ -243,8 +219,6 @@ const updateVideo = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
-
-
 
 const deleteVideo = asyncHandler(async (req, res, next) => {
   const { videoId } = req.params;
@@ -260,7 +234,6 @@ const deleteVideo = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    // Delete files from Cloudinary
     if (video.videoFile) {
       await deleteFromCloudinary(video.videoFile);
     }
@@ -274,7 +247,6 @@ const deleteVideo = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Remove video from the database
   const deletedVideo = await Video.findByIdAndDelete(videoId);
   if (!deletedVideo) {
     return next(new APIERROR(500, "Failed to delete video from the database"));
@@ -303,11 +275,9 @@ const fetchSubscriptionVideos = asyncHandler(async (req, res) => {
     const { offset = 0, limit = 16 } = req.query;
     const userId = req?.user?.id;
 
-    // Fetch subscribed channels
     const subscriptions = await Subscription.find({ subscriber: userId })
       .populate("channel")
-      .lean(); // Improves performance by returning plain objects
-
+      .lean();
     if (!subscriptions.length) {
       return res.status(200).json({
         success: true,
@@ -316,16 +286,14 @@ const fetchSubscriptionVideos = asyncHandler(async (req, res) => {
       });
     }
 
-    // Extract channel IDs
     const channelIds = subscriptions.map((sub) => sub.channel._id);
 
-    // Fetch videos from subscribed channels with pagination
     const videos = await Video.find({ owner: { $in: channelIds } })
       .sort({ createdAt: -1 })
       .skip(Number(offset))
       .limit(Number(limit))
-      .lean(); // Optimizes response time
-      
+      .lean();
+
     res.status(200).json({
       success: true,
       data: videos,
@@ -375,8 +343,6 @@ const searchVideo = asyncHandler(async (req, res) => {
     });
   }
 });
-
-
 
 export {
   getAllVideos,

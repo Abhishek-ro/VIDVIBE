@@ -9,11 +9,13 @@ import {
   getViews,
   handleAddView,
   addComment,
+  updateComments,
   allComments,
+  deleteComment,
   totalCommentNumber,
   getChannelSubscribers,
   fetchSubscriptionStatus,
-  isSubscribedToggle, 
+  isSubscribedToggle,
 } from "../../API/index.js";
 import "./PlayVideo.css";
 import Like from "../../assets/like.png";
@@ -56,6 +58,10 @@ export const PlayVideo = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [userId, setUserId] = useState(null);
   const [totalSubs, setTotalSub] = useState(0);
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedCommentText, setEditedCommentText] = useState("");
+
   const { themeMode } = useTheme();
   useEffect(() => {
     const fetchVideo = async () => {
@@ -83,7 +89,6 @@ export const PlayVideo = () => {
         const channelRes = await getUsernameById(videoData?.owner);
         setChannel(channelRes.data.username);
 
-        
         const subscriptionRes = await fetchSubscriptionStatus(videoData?.owner);
         setIsSubscribed(subscriptionRes?.data?.isSubscribed);
 
@@ -175,6 +180,32 @@ export const PlayVideo = () => {
     console.log("TotalSub", totalSubs);
   }, [totalSubs]);
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteComment(commentId)
+      setOpenMenuId(false)
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  };
+
+  const handleSaveEdit = async (commentId) => {
+    try {
+      console.log(commentId);
+      const res = await updateComments(commentId, editedCommentText);
+      console.log(res)
+      setAllComment((prev) =>
+        prev.map((c) =>
+          c._id === commentId ? { ...c, content: editedCommentText } : c
+        )
+      );
+      setEditingCommentId(null);
+    } catch (error) {
+      console.error("Error editing comment:", error);
+    }
+  };
+
+
   if (!video || !channel) return <p>Loading...</p>;
 
   return (
@@ -243,16 +274,70 @@ export const PlayVideo = () => {
         {allComment.map((comment) => (
           <div className="comment" key={comment._id}>
             <img
-              src={comment?.owner?.avatar || "/default-avatar.png"}
+              src={comment?.owner?.avatar}
               alt="user-avatar"
               className="circular-img"
             />
-            <div>
-              <h3>
-                {comment.owner.username}
-                <span> • {timeAgo(comment.createdAt)}</span>
-              </h3>
-              <p>{comment.content}</p>
+            <div className="comment-body">
+              <div className="comment-header">
+                <h3>
+                  {console.log("hehehehehehehehh",comment)}
+                  {comment.owner.username}
+                  <span> • {timeAgo(comment.createdAt)}</span>
+                </h3>
+
+                {comment.owner._id === userId && (
+                  <div className="comment-options-wrapper">
+                    <button
+                      className="comment-options-btn"
+                      onClick={() =>
+                        setOpenMenuId(
+                          openMenuId === comment._id ? null : comment._id
+                        )
+                      }
+                    >
+                      ⋮
+                    </button>
+
+                    {openMenuId === comment._id && (
+                      <div className="comment-options-menu">
+                        <button
+                          onClick={() => {
+                            setEditingCommentId(comment._id);
+                            setEditedCommentText(comment.content);
+                            setOpenMenuId(null);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteComment(comment._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {editingCommentId === comment._id ? (
+                <div className="edit-comment-box">
+                  <input
+                    type="text"
+                    value={editedCommentText}
+                    onChange={(e) => setEditedCommentText(e.target.value)}
+                  />
+                  <button onClick={() => handleSaveEdit(comment._id)}>
+                    Save
+                  </button>
+                  <button onClick={() => setEditingCommentId(null)}>
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <p>{comment.content}</p>
+              )}
             </div>
           </div>
         ))}

@@ -5,11 +5,7 @@
   box-sizing: border-box;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
-body {
-  background-color: #000;
-  min-height: 100vh;
-}
+ 
 
 /* Autofill Fix */
 .input-label input:-webkit-autofill,
@@ -153,7 +149,7 @@ body {
 
 /* Buttons */
 button {
-  width: 100%;
+  
   max-width: 420px;
   padding: 12px 20px;
   border: none;
@@ -166,7 +162,7 @@ button {
 }
 
 button:hover {
-  background-color: #ff1f1f;
+
   transform: scale(1.02);
 }
 
@@ -245,9 +241,6 @@ button:hover {
     width: 90%;
   }
 
-  button {
-    width: 90%;
-  }
 }
 
 @media screen and (max-width: 480px) {

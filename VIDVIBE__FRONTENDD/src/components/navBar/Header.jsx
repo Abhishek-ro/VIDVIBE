@@ -300,9 +300,9 @@ const NAV_HEADER = ({ setSideBar }) => {
           <div className="sideBarMob">
             <ul onClick={() => setSideBarMobile((p) => !p)}>
               <li onClick={() => setShowPopupPhone((prev) => !prev)}>USER</li>
-              <li onClick={toggleTheme}>
+              {/* <li onClick={toggleTheme}>
                 {themeMode === "dark" ? "Light Mode" : "Dark Mode"}
-              </li>
+              </li> */}
               <li onClick={() => handleUploadVideo()}>Upload Video</li>
             </ul>
           </div>
@@ -711,12 +711,12 @@ const NAV_HEADER = ({ setSideBar }) => {
             className="upload-icon"
             onClick={() => setShowUploadOptions(!showUploadOptions)}
           />
-          <img
+          {/* <img
             src={themeMode === "dark" ? Light : DarkMode}
             alt="DarkMode"
             className="Dark_icon"
             onClick={toggleTheme}
-          />
+          /> */}
 
           {/* User Icon */}
           <img

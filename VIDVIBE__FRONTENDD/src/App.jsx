@@ -29,7 +29,7 @@ function App() {
    const lightTheme = () => setThemeMode("light");
 
   return (
-    <div className="cont">
+    <div className={themeMode==="dark"?"contD":"cont"}>
       <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
         {/* Show Navbar only if the path is NOT "/auth" */}
         {location.pathname !== "/auth" && (

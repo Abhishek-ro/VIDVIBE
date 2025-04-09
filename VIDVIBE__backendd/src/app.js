@@ -33,21 +33,20 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    optionsSuccessStatus: 200, 
+    optionsSuccessStatus: 200,
   })
 );
 
 app.options("*", (_, res) => {
-  res.status(200).end();  
+  res.status(200).end();
 });
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Max-Age", "86400");  
+  res.header("Access-Control-Max-Age", "86400");
   next();
 });
- 
 
-app.use(express.json({ limit: "50mb" })); 
+app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.static("public"));
 

@@ -1,6 +1,6 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { User } from "../models/user.models.js";
-import {Video} from "../models/video.models.js";
+import { Video } from "../models/video.models.js";
 import { Subscription } from "../models/subscription.models.js";
 import { APIERROR } from "../utils/APIError.js";
 import { API } from "../utils/APIResponses.js";
@@ -30,7 +30,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
   if (existingSubscription) {
     await existingSubscription.deleteOne();
-    await User.findByIdAndUpdate(channelId, { $inc: { subscribersCount: -1 } }); // 🔹 Decrease count
+    await User.findByIdAndUpdate(channelId, { $inc: { subscribersCount: -1 } });
     return res.status(200).json(new API(200, "Unsubscribed"));
   } else {
     const newSubscription = await Subscription.create({
@@ -38,13 +38,12 @@ const toggleSubscription = asyncHandler(async (req, res) => {
       channel: channelId,
     });
     await newSubscription.save({ validateBeforeSave: false });
-    await User.findByIdAndUpdate(channelId, { $inc: { subscribersCount: 1 } }); // 🔹 Increase count
+    await User.findByIdAndUpdate(channelId, { $inc: { subscribersCount: 1 } });
     return res
       .status(200)
       .json(new API(200, "Subscribed successfully", newSubscription));
   }
 });
-
 
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
@@ -67,11 +66,10 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     status: "success",
     data: {
       subscribers,
-      subscribersCount: channel.subscribersCount || 0, // 🔹 Return updated count
+      subscribersCount: channel.subscribersCount || 0,
     },
   });
 });
-
 
 const getSubscribedChannels = asyncHandler(async (req, res) => {
   const { subscriberId } = req.params;
@@ -101,7 +99,6 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
   });
 });
 
-// ✅ Fetch Subscription Status
 const fetchSubscriptionStatus = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
   const userId = req.user?._id;
@@ -148,8 +145,8 @@ const getSubscribedVideos = asyncHandler(async (req, res) => {
   const channelIds = subscriptions.map((sub) => sub.channel._id);
 
   const videos = await Video.aggregate([
-    { $match: { channel: { $in: channelIds } } }, // Fetch videos from subscribed channels
-    { $sample: { size: 20 } }, // Randomly shuffle and limit results
+    { $match: { channel: { $in: channelIds } } },
+    { $sample: { size: 20 } },
   ]);
 
   res.status(200).json(new API(200, "Subscribed videos", videos));

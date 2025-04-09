@@ -13,11 +13,11 @@ export const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, text) => {
   try {
     const info = await transporter.sendMail({
-      from: '"VidVibe" <abhishekkumar.v1.05@gmail.com>', // sender address
-      to: "bar@example.com, baz@example.com", // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: "<b>Hello world?</b>", // html body
+      from: '"VidVibe" <abhishekkumar.v1.05@gmail.com>', 
+      to: "bar@example.com, baz@example.com", 
+      subject: "Hello ✔", 
+      text: "Hello world?",
+      html: "<b>Hello world?</b>",
     });
     console.log("Message sent: %s", info.messageId);
   } catch (error) {

@@ -1,13 +1,4 @@
 
-// comments [icon: comment] {
-//   id string pk
-//   video ObjectId videos
-//   owner ObjectId users
-//   content string
-//   createdAt Date
-//   updatedAt Date
-// }
-
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 import mongoose , {Schema} from "mongoose"
 

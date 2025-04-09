@@ -25,7 +25,7 @@ export const register = (data) => api.post("/api/v1/user/register", data);
 export const getUserData = () => api.get("/api/v1/user/current-user");
 export const verifyEmail = (data) =>
   api.post("/api/v1/user/verify-email", data);
-// 🔹 Videos API
+//  Videos API
 export const getVideos = (limit, offset) =>
   api.get(`/api/v1/video/get-all?limit=${limit}&offset=${offset}`);
 export const getUsernameById = (id) =>
@@ -35,7 +35,6 @@ export const getVideoById = (id) => api.get(`/api/v1/video/get/${id}`);
 export const deleteVideo = (id) => api.delete(`/api/v1/video/delete/${id}`);
 export const toggleVideoVisibility = (id) =>
   api.put(`/api/v1/video/toggle-publish-status/${id}`);
-
 
 export const updateVideo = async (videoId, updateDetails) => {
   try {
@@ -67,11 +66,7 @@ export const updateVideo = async (videoId, updateDetails) => {
   }
 };
 
-
-
-
-
-// 🔹 Likes API
+// Likes API
 export const toggleVideoLike = (videoId) =>
   api.put(`/api/v1/like/toggle-video-like/${videoId}`);
 export const toggleCommentLike = (commentId) =>
@@ -83,7 +78,7 @@ export const toggleTweetLike = (tweetId) =>
 export const getTotalLikes = (videoId) =>
   api.get(`/api/v1/like/getTotalLikes/${videoId}`);
 
-// 🔹 Views API
+// Views API
 export const getViews = (videoId) => api.post(`/api/v1/video/views/${videoId}`);
 export const handleAddView = async (videoId) => {
   try {
@@ -93,9 +88,9 @@ export const handleAddView = async (videoId) => {
   }
 };
 
-// 🔹 Comments API
+//  Comments API
 export const addComment = (videoId, text) =>
-  api.post(`/api/v1/comment/${videoId}`, { text });
+  api.post(`/api/v1/comment/add/${videoId}`, { text });
 export const allComments = (videoId, page = 0, limit = 10) =>
   api.get(`/api/v1/comment/${videoId}?page=${page}&limit=${limit}`);
 export const totalCommentNumber = (videoId) =>
@@ -106,7 +101,7 @@ export const deleteComment = (commentId) =>
   api.delete(`/api/v1/comment/${commentId}`);
 export const getUserId = () => api.get(`/api/v1/user/current-user`);
 
-// 🔹 Subscriptions API
+// Subscriptions API
 export const isSubscribedToggle = (channelId) =>
   api.post(`/api/v1/subscription/c/${channelId}`);
 export const getSubscribedChannels = (subscriberId) =>
@@ -114,16 +109,15 @@ export const getSubscribedChannels = (subscriberId) =>
 export const getChannelSubscribers = (channelId) =>
   api.get(`/api/v1/subscription/c/${channelId}/subscribers`);
 
-// ✅ Fetch Subscription Status
+// Fetch Subscription Status
 export const fetchSubscriptionStatus = (channelId) =>
   api.get(`/api/v1/subscription/c/${channelId}/status`);
-
-
 
 export const changeUserPassword = (oldPassword, newPassword) =>
   api.post("/api/v1/user/change-password", { oldPassword, newPassword });
 
-export const updateUserDetails=(data)=>api.post("/api/v1/user/update-account-details",data)
+export const updateUserDetails = (data) =>
+  api.post("/api/v1/user/update-account-details", data);
 export const updateUserAvatar = (file) => {
   const formData = new FormData();
   formData.append("avatar", file); // Ensure the key matches multer's field name
@@ -134,10 +128,11 @@ export const updateUserAvatar = (file) => {
     },
   });
 };
-export const getSubscribedVideos = () => api.get("/api/v1/video/subscribed/videos");
+export const getSubscribedVideos = () =>
+  api.get("/api/v1/video/subscribed/videos");
 export const updateUserCover = (file) => {
   const formData = new FormData();
-  formData.append("coverImage", file); 
+  formData.append("coverImage", file);
 
   return api.post("/api/v1/user/update-user-cover-image", formData, {
     headers: {
@@ -145,7 +140,12 @@ export const updateUserCover = (file) => {
     },
   });
 };
-export const uploadVideo = (videoFile, description, titleUpload,thumbnailUpload) => {
+export const uploadVideo = (
+  videoFile,
+  description,
+  titleUpload,
+  thumbnailUpload
+) => {
   const formData = new FormData();
   formData.append("videoFile", videoFile);
   if (thumbnailUpload) {
@@ -162,9 +162,9 @@ export const uploadVideo = (videoFile, description, titleUpload,thumbnailUpload)
 };
 // users Liked Videos
 
-export const likedVideos=()=>api.get("/api/v1/like/getLikedVideos")
-export const watcheHistory=()=>api.get("/api/v1/user/watch-history")
-export const getYourVideos=()=>api.get("/api/v1/user/user-videos")
+export const likedVideos = () => api.get("/api/v1/like/getLikedVideos");
+export const watcheHistory = () => api.get("/api/v1/user/watch-history");
+export const getYourVideos = () => api.get("/api/v1/user/user-videos");
 export const getChannelVideos = (channelId) =>
   api.get(`/api/v1/subscription/channel/${channelId}/videos`);
 export const searchVideos = (searchQuery) =>

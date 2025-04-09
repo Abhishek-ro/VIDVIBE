@@ -28,13 +28,16 @@ const YourVideos = () => {
     description: "",
     thumbnail: null,
   });
+const formatDuration = (duration) => {
+  if (typeof duration !== "number" || duration < 0 || isNaN(duration)) {
+    return "0:00";
+  }
 
-  const formatDuration = (duration) => {
-    if (!duration || isNaN(duration)) return "0:00";
-    const minutes = Math.floor(duration / 60);
-    const seconds = duration % 60;
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
+  const minutes = Math.floor(duration / 60);
+  const seconds = Math.floor(duration % 60);
+
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+};
 
   const fetchVideos = useCallback(async () => {
     setLoading(true);

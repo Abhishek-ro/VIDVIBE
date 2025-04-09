@@ -3,13 +3,13 @@ import { Comment } from "../models/comment.models.js";
 import { APIERROR } from "../utils/APIError.js";
 import { API } from "../utils/APIResponses.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
+import { Video } from "../models/video.models.js";
 
 const getVideoComments = asyncHandler(async (req, res) => {
   try {
     const { videoId } = req.params;
     let { page = 0, limit = 6 } = req.query;
 
-    // Ensure page and limit are integers
     page = parseInt(page, 6);
     limit = parseInt(limit, 6);
 
@@ -19,14 +19,12 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
     const skip = page * limit;
 
-    // Fetch comments with pagination
     const comments = await Comment.find({ video: videoId })
       .populate("owner", "username avatar")
-      .sort({ createdAt: -1 }) // Newest comments first
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    // Check if more comments exist
     const hasMore = comments.length === limit;
 
     res.status(200).json({
@@ -51,7 +49,7 @@ const getTotalComments = asyncHandler(async (req, res) => {
 
     const comments = await Comment.find({ video: videoId })
       .populate("owner", "username avatar")
-      .sort({ createdAt: -1 }); // Newest comments first
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -64,10 +62,17 @@ const getTotalComments = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Error fetching comments" });
   }
 });
+
 const addComment = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(videoId)) {
     throw new APIERROR(400, "Video ID is required");
+  }
+
+  const video = await Video.findById(videoId);
+  console.log("videoId", video);
+  if (!video) {
+    throw new APIERROR(404, "Video not found");
   }
   const { text } = req.body;
 
@@ -91,7 +96,7 @@ const updateComment = asyncHandler(async (req, res) => {
     throw new APIERROR(400, "Invalid comment ID");
   }
 
-  if (!text || !text.trim()) {
+  if (!(text || text.trim())) {
     throw new APIERROR(400, "Comment text is required");
   }
 
@@ -108,7 +113,7 @@ const updateComment = asyncHandler(async (req, res) => {
   comment.content = text;
 
   try {
-    await comment.save({ validateBeforeSave: true });
+    await comment.save({ validateBeforeSave: false });
     res.status(200).json(new API(200, "Comment updated", comment));
   } catch (error) {
     console.error("Error Saving Comment:", error);

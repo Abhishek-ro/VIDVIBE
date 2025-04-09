@@ -1,14 +1,4 @@
-//   id string pk
-//   username string
-//   email string
-//   fullName string
-//   avatar string
-//   coverImage string
-//   watchHistory ObjectId[] videos
-//   password string
-//   refreshToken string
-//   createdAt Date
-//   updatedAt Date
+
 
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
@@ -52,7 +42,7 @@ const userSchema = new Schema(
     },
     subscribersCount: {
       type: Number,
-      default: 0, // ✅ Default count is 0
+      default: 0, 
     },
     subscriptions: [{ type: Schema.Types.ObjectId, ref: "User" }], 
     isVerified:{

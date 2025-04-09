@@ -9,7 +9,7 @@ const viewSchema = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User model (optional for anonymous users)
+      ref: "User", 
       default: null,
     },
     

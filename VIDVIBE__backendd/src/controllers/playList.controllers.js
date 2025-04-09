@@ -25,7 +25,6 @@ const createPlaylist = asyncHandler(async (req, res) => {
   }
 });
 
-
 const getUserPlaylists = asyncHandler(async (req, res) => {
   try {
     const { userId } = req.params;
@@ -50,7 +49,6 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
   }
 });
 
-
 const getPlaylistById = asyncHandler(async (req, res) => {
   try {
     const { playlistId } = req.params;
@@ -72,7 +70,6 @@ const getPlaylistById = asyncHandler(async (req, res) => {
     throw new APIERROR(500, error.message);
   }
 });
-
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
   try {
@@ -106,7 +103,6 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
     throw new APIERROR(500, error.message);
   }
 });
-
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
   try {
@@ -145,7 +141,6 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
   }
 });
 
-
 const deletePlaylist = asyncHandler(async (req, res) => {
   try {
     const { playlistId } = req.params;
@@ -168,7 +163,6 @@ const deletePlaylist = asyncHandler(async (req, res) => {
   }
 });
 
-
 const updatePlaylist = asyncHandler(async (req, res) => {
   try {
     const { playlistId } = req.params;
@@ -187,7 +181,7 @@ const updatePlaylist = asyncHandler(async (req, res) => {
     if (name) playlist.name = name;
     if (description) playlist.description = description;
 
-    const updatedPlaylist = await playlist.save({validateBeforeSave:true});
+    const updatedPlaylist = await playlist.save({ validateBeforeSave: true });
 
     res
       .status(200)
@@ -196,7 +190,6 @@ const updatePlaylist = asyncHandler(async (req, res) => {
     throw new APIERROR(500, error.message);
   }
 });
-
 
 export {
   createPlaylist,

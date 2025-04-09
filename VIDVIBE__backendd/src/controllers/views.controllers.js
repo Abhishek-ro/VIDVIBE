@@ -1,10 +1,9 @@
 import View from "../models/views.models.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
-import {Video} from "../models/video.models.js";
+import { Video } from "../models/video.models.js";
 const addView = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const userId = req.user ? req.user.id : null;
-
 
   if (userId) {
     const existingView = await View.findOne({ video: videoId, user: userId });

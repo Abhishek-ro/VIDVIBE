@@ -2,12 +2,10 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-// Set up storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadPath = path.resolve("public", "temp");
 
-    // ✅ Ensure directory exists
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
@@ -26,7 +24,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// Function to delete a file from a given local path
 const deleteFileFromLocalPath = (filePath) => {
   try {
     const resolvedPath = path.resolve(filePath);
@@ -41,7 +38,6 @@ const deleteFileFromLocalPath = (filePath) => {
   }
 };
 
-// Multer middleware
 const upload = multer({ storage });
 
 export { deleteFileFromLocalPath, upload };

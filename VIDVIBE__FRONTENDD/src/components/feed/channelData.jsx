@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import { getChannelVideos } from "../../API/index.js";
 import "./Feed.css";
 import useTheme from "../../contexts/theme.js";
-
+import Loader from "../Loader/Loader.jsx";
 const ChannelData = () => {
   const location = useLocation();
   const channelId = location.state?.channelData;
@@ -20,7 +20,9 @@ const ChannelData = () => {
     async (pageNumber = 0, reset = false) => {
       if (!hasMore || loading || !channelId) return; // Ensure channelId exists
       setLoading(true);
-
+       if (loading) {
+         return <Loader />;
+       }
       try {
         const dataSub = await getChannelVideos(channelId); // Pass correct parameter
         const dataChannel = dataSub?.data?.data?.videos;

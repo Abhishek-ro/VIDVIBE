@@ -14,7 +14,6 @@ import { deleteFileFromLocalPath } from "../middlewares/multer.middlewares.js";
 import { sendVerificationCode, welcomeEmail } from "../middlewares/email.js";
 import path from "path";
 import jwt from "jsonwebtoken";
-import { mongoose } from "mongoose";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -474,7 +473,7 @@ const getUserVideos = asyncHandler(async (req, res, next) => {
 
   const videos = await Video.find({ owner: userId })
     .select("id thumbnail title views createdAt duration")
-    .sort({ createdAt: -1 }); // Sorting by newest first
+    .sort({ createdAt: -1 });
 
   if (!videos.length) {
     return res
@@ -486,8 +485,6 @@ const getUserVideos = asyncHandler(async (req, res, next) => {
     .status(200)
     .json(new API(200, "User videos fetched successfully", { videos }));
 });
-
-// get username by its id
 
 const getUsernameById = asyncHandler(async (req, res) => {
   const { id } = req.params;

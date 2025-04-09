@@ -1,6 +1,6 @@
 import { Like } from "../models/like.models.js";
 import { APIERROR } from "../utils/APIError.js";
-import { API } from "../utils/APIResponses.js";
+// import { API } from "../utils/APIResponses.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
@@ -10,8 +10,6 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
       throw new APIERROR(400, "Video Id is required");
     }
     const like = await Like.findOne({ video: videoId, likedBy: req.user._id });
-     
-
 
     if (like) {
       await Like.findByIdAndDelete(like._id);
@@ -75,14 +73,17 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 const getLikedVideos = asyncHandler(async (req, res) => {
   try {
     const userId = req.user._id;
-    
+
     const likedVideos = await Like.find({
       likedBy: userId,
       video: { $exists: true },
     })
-      .populate("video", "title description thumbnail views duration createdAt owner")
+      .populate(
+        "video",
+        "title description thumbnail views duration createdAt owner"
+      )
       .lean();
-    
+
     res.status(200).json({
       status: "success",
       message: likedVideos.length
@@ -100,7 +101,7 @@ const getTotalLikes = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
 
     const likes = await Like.find({ video: videoId }).lean();
-    
+
     res.status(200).json({
       status: "success",
       message: "Total likes fetched successfully",
@@ -110,7 +111,6 @@ const getTotalLikes = asyncHandler(async (req, res) => {
     throw new APIERROR(500, error.message);
   }
 });
-
 
 export {
   toggleCommentLike,

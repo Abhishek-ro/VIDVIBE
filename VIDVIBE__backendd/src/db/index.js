@@ -17,8 +17,7 @@ const connectDB = async () => {
   } catch (err) {
     throw new APIERROR(
       401,
-      "Something went wrong while connecting to the database!!!"
-      ,
+      "Something went wrong while connecting to the database!!!",
       console.log(err)
     );
   }

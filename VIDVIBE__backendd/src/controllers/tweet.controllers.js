@@ -1,8 +1,8 @@
-import mongoose, { isValidObjectId } from "mongoose";
+import { isValidObjectId } from "mongoose";
 import { Tweet } from "../models/tweet.models.js";
 import { User } from "../models/user.models.js";
 import { APIERROR } from "../utils/APIError.js";
-import { API} from "../utils/APIResponses.js";
+import { API } from "../utils/APIResponses.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 
 const createTweet = asyncHandler(async (req, res) => {
@@ -24,14 +24,11 @@ const createTweet = asyncHandler(async (req, res) => {
       owner: userId,
     });
 
-    res
-      .status(201)
-      .json(new API(201, "Tweet created successfully", { tweet }));
+    res.status(201).json(new API(201, "Tweet created successfully", { tweet }));
   } catch (error) {
     throw new APIERROR(500, error.message);
   }
 });
-
 
 const getUserTweets = asyncHandler(async (req, res) => {
   try {
@@ -57,21 +54,16 @@ const getUserTweets = asyncHandler(async (req, res) => {
     if (!tweets.length) {
       return res
         .status(200)
-        .json(
-          new API(200, "No tweets found for this user", { tweets: [] })
-        );
+        .json(new API(200, "No tweets found for this user", { tweets: [] }));
     }
 
     res
       .status(200)
-      .json(
-        new API(200, "User tweets retrieved successfully", { tweets })
-      );
+      .json(new API(200, "User tweets retrieved successfully", { tweets }));
   } catch (error) {
     throw new APIERROR(500, error.message);
   }
 });
-
 
 const updateTweet = asyncHandler(async (req, res) => {
   try {
@@ -85,7 +77,7 @@ const updateTweet = asyncHandler(async (req, res) => {
       throw new APIERROR(400, "Content is required to update the tweet");
 
     const tweet = await Tweet.findById(tweetId);
-    
+
     if (!tweet) throw new APIERROR(404, "Tweet not found");
 
     if (!tweet.owner.equals(req.user._id))
@@ -97,14 +89,11 @@ const updateTweet = asyncHandler(async (req, res) => {
 
     res
       .status(200)
-      .json(
-        new API(200, "Tweet updated successfully", { updatedTweet })
-      );
+      .json(new API(200, "Tweet updated successfully", { updatedTweet }));
   } catch (error) {
     throw new APIERROR(500, error.message);
   }
 });
-
 
 const deleteTweet = asyncHandler(async (req, res) => {
   try {
