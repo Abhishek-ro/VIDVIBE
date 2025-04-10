@@ -115,7 +115,7 @@ const WatchHist = () => {
                     {channelInfoMap[video?.video?.owner]?.username || "Unknown"}
                   </h3>
                   <p>
-                    {console.log(video?.video.createdAt)}
+                   
                     {video?.video?.views} views •{" "}
                     {formatDistanceToNow(new Date(video?.video.createdAt), {
                       addSuffix: true,

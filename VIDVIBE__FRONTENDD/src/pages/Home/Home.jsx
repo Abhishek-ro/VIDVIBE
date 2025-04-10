@@ -8,9 +8,9 @@ import User from "../../components/user/user.jsx"
 import useTheme from "../../contexts/theme.js";
 const Home = ({ sideBar }) => {
   const [category, setCategory] = useState(0);
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate(); 
   const {themeMode} = useTheme();
-  // Redirect when category is 3
+
   
 
   return (

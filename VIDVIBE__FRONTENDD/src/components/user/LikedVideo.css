@@ -1,6 +1,6 @@
 .feed {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Always 3 videos per row */
+  grid-template-columns: repeat(3, 1fr); 
   gap: 20px;
   margin-top: 20px;
   padding: 0 10px;
@@ -41,7 +41,7 @@
 }
 
 .thumbnail-container {
-  height: 200px; /* Fixed height */
+  height: 200px; 
   overflow: hidden;
 }
 

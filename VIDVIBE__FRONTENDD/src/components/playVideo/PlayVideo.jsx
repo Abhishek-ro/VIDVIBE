@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState ,useCallback } from "react";
 import { useParams } from "react-router-dom";
 import {
   getUserId,
@@ -112,26 +112,28 @@ export const PlayVideo = () => {
     }
   };
 
-  const loadComments = async (page) => {
-    if (loading || !hasMore) return;
-    setLoading(true);
+ const loadComments = useCallback(
+   async (page) => {
+     if (loading || !hasMore) return;
+     setLoading(true);
 
-    try {
-      const res = await allComments(videoId, page, 5);
-      const newComments = res?.data?.comments || [];
+     try {
+       const res = await allComments(videoId, page, 5);
+       const newComments = res?.data?.comments || [];
 
-      if (newComments.length === 0) {
-        setHasMore(false);
-      } else {
-        setAllComment((prev) => [...prev, ...newComments]);
-      }
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
+       if (newComments.length === 0) {
+         setHasMore(false);
+       } else {
+         setAllComment((prev) => [...prev, ...newComments]);
+       }
+     } catch (error) {
+       console.error("Error fetching comments:", error);
+     }
 
-    setLoading(false);
-  };
-
+     setLoading(false);
+   },
+   [loading, hasMore, videoId]
+ );
   useEffect(() => {
     const fetchTotalComments = async () => {
       try {
@@ -148,7 +150,7 @@ export const PlayVideo = () => {
     if (pageC > 0) {
       loadComments(pageC);
     }
-  }, [pageC]);
+  }, [pageC, loadComments]);
 
   const addLike = async () => {
     try {
@@ -162,6 +164,8 @@ export const PlayVideo = () => {
       console.error("Error toggling like:", error);
     }
   };
+
+
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
@@ -217,8 +221,8 @@ export const PlayVideo = () => {
           {views} Views &bull; {timeAgo(video.createdAt)}
         </p>
         <div className="flex-div">
-          <span>
-            <img src={Like} alt="Like" onClick={addLike} /> {like}
+          <span onClick={addLike}>
+            <img src={Like} alt="Like" /> {like}
           </span>
           <span>
             <img src={dislike} alt="Dislike" />
@@ -281,7 +285,7 @@ export const PlayVideo = () => {
             <div className="comment-body">
               <div className="comment-header">
                 <h3>
-                  {console.log("hehehehehehehehh",comment)}
+                  {console.log("hehehehehehehehh", comment)}
                   {comment.owner.username}
                   <span> • {timeAgo(comment.createdAt)}</span>
                 </h3>

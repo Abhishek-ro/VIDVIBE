@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   getSubscribedVideos,
@@ -13,9 +13,9 @@ const SubscribedFeed = ({ sideBar, category, setCategory }) => {
   const [videos, setVideos] = useState([]);
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(false);
-  const observerRef = useRef(null);
+
   const { themeMode } = useTheme();
-  // Fetch subscribed videos
+
   const formatDuration = (duration) => {
     if (!duration || isNaN(duration)) return "0:00";
 

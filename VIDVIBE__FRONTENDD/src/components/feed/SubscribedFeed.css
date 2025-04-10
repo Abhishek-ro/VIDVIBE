@@ -40,7 +40,7 @@
 }
 
 .thumbnail-container {
-  height: 200px; /* Fixed height */
+  height: 200px;
   overflow: hidden;
 }
 

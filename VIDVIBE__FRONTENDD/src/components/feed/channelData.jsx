@@ -16,15 +16,24 @@ const ChannelData = () => {
   const limit = 16;
   const { themeMode } = useTheme();
 
+
+  const formatDuration = (duration) => {
+    if (!duration || isNaN(duration)) return "0:00";
+
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
   const fetchVideos = useCallback(
     async (pageNumber = 0, reset = false) => {
-      if (!hasMore || loading || !channelId) return; // Ensure channelId exists
+      if (!hasMore || loading || !channelId) return; 
       setLoading(true);
-       if (loading) {
-         return <Loader />;
-       }
+      if (loading) {
+        return <Loader />;
+      }
       try {
-        const dataSub = await getChannelVideos(channelId); // Pass correct parameter
+        const dataSub = await getChannelVideos(channelId);
         const dataChannel = dataSub?.data?.data?.videos;
         if (!dataChannel || dataChannel.length === 0) {
           setHasMore(false);
@@ -37,7 +46,7 @@ const ChannelData = () => {
       } catch (error) {
         console.error("Error fetching videos:", error);
       } finally {
-        setLoading(false); // Ensure loading resets
+        setLoading(false); 
       }
     },
     [hasMore, loading, channelId]
@@ -79,6 +88,9 @@ const ChannelData = () => {
         >
           <div className="thumbnail-container">
             <img src={video.thumbnail} alt={video.title} />
+            <div className="video-duration">
+              {formatDuration(video.duration)}
+            </div>
           </div>
           <div
             className={`${

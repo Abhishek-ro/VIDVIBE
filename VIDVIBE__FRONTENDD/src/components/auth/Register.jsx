@@ -21,8 +21,8 @@ export const Register = () => {
   const registerMutation = useMutation({
     mutationFn: (reqData) => register(reqData),
     onSuccess: (res) => {
-      const { message } = res.data; // Assuming your backend sends a message
-      const { email } = formData; // Get the registered email
+      const { message } = res.data;
+      const { email } = formData;
 
       enqueueSnackbar(
         message ||
@@ -32,10 +32,8 @@ export const Register = () => {
         }
       );
 
-      // Store the email temporarily (you might use a different identifier)
       localStorage.setItem("verificationEmail", email);
 
-      // Redirect to the verification page
       navigate("/verify");
     },
     onError: (err) => {
@@ -55,7 +53,9 @@ export const Register = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <div className="all-input-box">
-          <label className="label-name">Username</label>
+          <label htmlFor="username" className="label-name">
+            Username
+          </label>
           <div className="input-label">
             <input
               type="text"
@@ -66,7 +66,9 @@ export const Register = () => {
             />
           </div>
 
-          <label className="label-name">fullname</label>
+          <label htmlFor="fullname" className="label-name">
+            fullname
+          </label>
           <div className="input-label">
             <input
               type="text"
@@ -77,7 +79,9 @@ export const Register = () => {
             />
           </div>
 
-          <label className="label-name">email</label>
+          <label htmlFor="email" className="label-name">
+            email
+          </label>
           <div className="input-label">
             <input
               type="email"
@@ -88,7 +92,9 @@ export const Register = () => {
             />
           </div>
 
-          <label className="label-name">password</label>
+          <label htmlFor="password" className="label-name">
+            password
+          </label>
           <div className="input-label">
             <input
               type="password"

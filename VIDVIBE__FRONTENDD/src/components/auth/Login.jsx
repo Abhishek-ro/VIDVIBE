@@ -49,7 +49,9 @@ export const Login = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <div className="all-input-box">
-          <label className="label-name">Username</label>
+          <label htmlFor="username" className="label-name">
+            Username
+          </label>
           <div className="input-label">
             <input
               type="text"
@@ -60,7 +62,9 @@ export const Login = () => {
             />
           </div>
 
-          <label className="label-name">Email</label>
+          <label htmlFor="email" className="label-name">
+            Email
+          </label>
           <div className="input-label">
             <input
               type="email"
@@ -71,7 +75,9 @@ export const Login = () => {
             />
           </div>
 
-          <label className="label-name">Password</label>
+          <label htmlFor="password" className="label-name">
+            Password
+          </label>
           <div className="input-label">
             <input
               type="password"

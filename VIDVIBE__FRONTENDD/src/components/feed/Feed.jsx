@@ -61,7 +61,7 @@ const Feed = ({ category }) => {
                 `Failed to fetch username for owner ${video.owner}:`,
                 error
               );
-              return { ...video, username: "Unknown" }; // Default username
+              return { ...video, username: "Unknown" };
             }
           })
         );

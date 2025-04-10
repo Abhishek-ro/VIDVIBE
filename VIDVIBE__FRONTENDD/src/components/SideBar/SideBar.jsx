@@ -3,19 +3,18 @@ import home from "../../assets/home.png";
 import sub from "../../assets/sub.png"
 import user from "../../assets/user.png";
 import { useState, useEffect } from "react";
-import ChannelData from "../feed/channelData.jsx";
+
 import { useNavigate,Link } from "react-router-dom";
 import {
   getUserId,
   getSubscribedChannels,
-  getChannelVideos,
+  
 } from "../../API/index.js";
 
 import useTheme from "../../contexts/theme.js";
 export const SideBar = ({ sideBar, category, setCategory }) => {
     const navigate = useNavigate();
   const [userData, setUserData] = useState([]);
-  const [channelData,setChannelData]=useState([])
   const { themeMode} = useTheme();
   useEffect(() => {
     const fetchData = async () => {

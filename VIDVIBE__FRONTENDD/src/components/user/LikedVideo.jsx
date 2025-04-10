@@ -32,7 +32,7 @@ const LikedVideo = () => {
         const videoData = videoRes?.data?.data || [];
         setVideos(videoData);
 
-        // Fetch channel info for all videos at once
+      
         const channelIds = videoData
           .map((video) => video?.video?.owner)
           .filter(Boolean);

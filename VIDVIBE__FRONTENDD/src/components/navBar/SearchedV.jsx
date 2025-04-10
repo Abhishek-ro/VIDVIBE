@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { searchVideos } from "../../API/index.js";
 import useTheme from "../../contexts/theme.js";
