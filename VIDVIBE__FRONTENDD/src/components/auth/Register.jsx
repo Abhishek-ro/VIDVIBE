@@ -23,14 +23,14 @@ export const Register = () => {
     onSuccess: (res) => {
       const { message } = res.data;
       const { email } = formData;
-
+     
       enqueueSnackbar(
         message ||
           "Registration successful! Please check your email to verify your account.",
         {
           variant: "success",
         }
-      );
+      ); 
 
       localStorage.setItem("verificationEmail", email);
 
