@@ -1,50 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
-import { verifyEmail } from "../API/index.js"; // Your API function
+import { verifyEmail } from "../API/index.js";
+import "./Verify.css"; 
 
 const VerificationPage = () => {
   const navigate = useNavigate();
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationStatus, setVerificationStatus] = useState("");
-  const [email, setEmail] = useState(""); 
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
-
     const storedEmail = localStorage.getItem("verificationEmail");
     if (storedEmail) {
       setEmail(storedEmail);
     } else {
-
       enqueueSnackbar("No email found for verification.", { variant: "error" });
-      navigate("/register"); 
+      navigate("/register");
     }
-  }, [navigate, enqueueSnackbar]);
+  }, [navigate]);
 
   const handleInputChange = (event) => {
     setVerificationCode(event.target.value);
   };
 
   const handleVerify = async () => {
-
     if (!email) {
       enqueueSnackbar("Email information is missing.", { variant: "error" });
       return;
     }
 
     try {
-      
       const response = await verifyEmail({ email, code: verificationCode });
-      console.log("HEHEHHEHEHEHEH",response)
       enqueueSnackbar(response.data.message || "Email verified successfully!", {
         variant: "success",
       });
       const { accessToken } = response.data.data;
-      localStorage.removeItem("verificationEmail"); 
+      localStorage.removeItem("verificationEmail");
       localStorage.setItem("accessToken", accessToken);
-      navigate("/"); 
+      navigate("/");
     } catch (error) {
-      console.error("Verification failed:", error);
       const errorMessage =
         error.response?.data?.message ||
         "Verification failed. Please try again.";
@@ -59,12 +54,10 @@ const VerificationPage = () => {
       return;
     }
     try {
-      
       enqueueSnackbar("Verification code resent to your email.", {
         variant: "info",
       });
     } catch (error) {
-      console.error("Failed to resend code:", error);
       const errorMessage =
         error.response?.data?.message || "Failed to resend verification code.";
       enqueueSnackbar(errorMessage, { variant: "error" });
@@ -72,25 +65,30 @@ const VerificationPage = () => {
   };
 
   return (
-    <div className="b">
-      <h1>Verify Your Email</h1>
-      <p>
+    <div className="verification-container">
+      <h1 className="verification-title">Verify Your Email</h1>
+      <p className="verification-instruction">
         Please enter the verification code sent to your email address:{" "}
-        <strong>{email}</strong>
+        <strong className="highlight-email">{email}</strong>
       </p>
       <input
         type="text"
+        className="verification-input"
         value={verificationCode}
         onChange={handleInputChange}
         placeholder="Enter verification code"
       />
-      <button onClick={handleVerify}>Verify</button>
+      <button className="verify-btn" onClick={handleVerify}>
+        Verify
+      </button>
       {verificationStatus && (
-        <p style={{ color: "red" }}>{verificationStatus}</p>
+        <p className="verification-error">{verificationStatus}</p>
       )}
-      <p>
-        Didn't receive the code?{" "}
-        <button onClick={handleResendCode}>Resend code</button>
+      <p className="resend-section">
+        Didn't receive the code?
+        <button className="resend-btn" onClick={handleResendCode}>
+          Resend code
+        </button>
       </p>
     </div>
   );

@@ -25,11 +25,11 @@
   min-height: 100vh;
 }
 
-/* Left Side */
+
 .left_main_image_div {
   position: relative;
   width: 50%;
-  background-image: url("../assets/LEFT_IMG.jpg");
+  background-image: url("../assets/sideImg.png");
   background-size: cover;
   background-position: center;
 }

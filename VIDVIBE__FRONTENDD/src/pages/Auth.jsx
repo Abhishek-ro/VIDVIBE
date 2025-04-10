@@ -1,5 +1,5 @@
 import "./Auth.css";
-import logo from "../assets/logo.png";
+import Slogo from "../assets/smallLogo.png";
 import {Register}  from "../components/auth/Register.jsx";
 import { Login } from "../components/auth/Login.jsx";
 import {useState} from "react";
@@ -29,7 +29,7 @@ export default function Auth() {
 
       <div className="right_side_auth">
         <div className="logo_col">
-          <img src={logo} alt="VIDVIBE" className="logo" />
+          <img src={Slogo} alt="VIDVIBE" className="logo" />
           <h1 className="brandName">VIDVIBE</h1>
         </div>
         <div>
@@ -39,9 +39,16 @@ export default function Auth() {
         </div>
         {isRegister ? <Register /> : <Login />}
         <div className="acc_exist">
-          <p className="para"> {isRegister?`Already have an account?`:"Don't have an account?"}</p>
-          <a href="#" onClick={isRegister?login:signup} className="link-para">
-            {isRegister?"Login":"Signup"}
+          <p className="para">
+            {" "}
+            {isRegister ? `Already have an account?` : "Don't have an account?"}
+          </p>
+          <a
+            href="#"
+            onClick={isRegister ? login : signup}
+            className="link-para"
+          >
+            {isRegister ? "Login" : "Signup"}
           </a>
         </div>
       </div>
