@@ -6,17 +6,27 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.pids
+*.pid
+*.seed
+*.pid.lock
 
-# Node modules and build artifacts
-node_modules
-dist
-dist-ssr
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Local environment
 *.local
 
-# Editor directories and files
+# Editor settings
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -24,8 +34,24 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment variables
+# Environment files
 .env
-
-# Other sensitive files
 *.env.*
+
+# OS-specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*~
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# Test and coverage
+coverage/
+.nyc_output/
+test-results/
