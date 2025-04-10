@@ -2,7 +2,7 @@ import "./Recommended.css";
 import { getVideos, getUsernameById } from "../../API/index.js";
 import { useEffect, useState, useRef, useCallback } from "react";
 import useTheme from "../../contexts/theme.js";
-
+import { useSnackbar } from "notistack";
 const Recommended = () => {
   const [videos, setVideos] = useState([]);
   const [page, setPage] = useState(0);
@@ -10,6 +10,7 @@ const Recommended = () => {
   const videoIds = useRef(new Set());
   const loaderRef = useRef(null);
   const { themeMode } = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
   const timeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
     const intervals = {
@@ -60,7 +61,9 @@ const Recommended = () => {
       setVideos((prevVideos) => [...prevVideos, ...newVideos]);
       setPage((prevPage) => prevPage + limit);
     } catch (error) {
-      console.error("Error fetching videos:", error);
+      enqueueSnackbar("Error fetching videos", {
+          variant: "error",
+        });
     }
   }, [page]);
 

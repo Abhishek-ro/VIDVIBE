@@ -1,13 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { getUserId, getSubscribedChannels } from "../API/index.js";
-
+import { useSnackbar } from "notistack";
 const SidebarContext = createContext();
 
 export const SidebarProvider = ({ children }) => {
   const [userData, setUserData] = useState([]);
   const [sideBar, setSideBar] = useState(true);
   const [category, setCategory] = useState(0);
-
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -15,7 +15,9 @@ export const SidebarProvider = ({ children }) => {
         const userList = await getSubscribedChannels(data?.data?.data?._id);
         setUserData(userList?.data?.data?.subscribedChannels);
       } catch (error) {
-        console.error("Error fetching subscribed channels:", error);
+        enqueueSnackbar("Error fetching subscribed channels", {
+          variant: "error",
+        });
       }
     };
     fetchData();

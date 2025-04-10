@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./UserLibrary.css";
+import { useSnackbar } from "notistack";
 import {
   likedVideos,
   watcheHistory,
@@ -23,6 +24,7 @@ const UserLibrary = () => {
   const [showToggleConfirm, setShowToggleConfirm] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   const { themeMode } = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
   const [updateDetails, setUpdateDetails] = useState({
     id: "",
     title: "",
@@ -53,7 +55,9 @@ const UserLibrary = () => {
         );
         setUserVideos(user?.data?.message?.videos || []);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        enqueueSnackbar("Error fetching data", {
+          variant: "error",
+        });
       }
     };
 
@@ -82,8 +86,9 @@ const UserLibrary = () => {
       const user = await getYourVideos();
       setUserVideos(user?.data?.message?.videos || []);
     } catch (error) {
-      console.error("Error updating video:", error);
-      alert("Failed to update video.");
+      enqueueSnackbar("Failed to update video.", {
+          variant: "error",
+        });
     }
   };
 
@@ -106,8 +111,9 @@ const UserLibrary = () => {
       const user = await getYourVideos();
       setUserVideos(user?.data?.message?.videos || []);
     } catch (error) {
-      console.error("Error toggling video status:", error);
-      alert("Failed to toggle video status.");
+      enqueueSnackbar("Failed to toggle video status.", {
+        variant: "error",
+      });
     }
   };
   const formatDuration = (duration) => {
@@ -140,10 +146,13 @@ const UserLibrary = () => {
       );
 
       setShowDeleteConfirm(null);
-      alert("Video deleted successfully!");
+      enqueueSnackbar("Video Deleted Successfull", {
+        variant: "success",
+      });
     } catch (error) {
-      console.error("Error deleting video:", error);
-      alert("Failed to delete video.");
+      enqueueSnackbar("Failed to delete video.", {
+        variant: "error",
+      });
     }
   };
 

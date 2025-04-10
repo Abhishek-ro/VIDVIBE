@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import Loader from "../Loader/Loader.jsx";
+import { useSnackbar } from "notistack";
+
 import {
   getVideos,
   getSubscribedVideos,
@@ -18,6 +20,9 @@ const Feed = ({ category }) => {
   const observerRef = useRef(null);
   const limit = 16;
   const { themeMode } = useTheme();
+
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const fetchVideos = useCallback(
     async (pageNumber = 0, reset = false) => {
       if (!hasMore || loading) return;
@@ -29,7 +34,15 @@ const Feed = ({ category }) => {
       try {
         const userData = await getUserId();
         const userId = userData?.data?.data?._id;
-
+        if (!userId) {
+          enqueueSnackbar("User not found. Please log in again.", {
+            variant: "error",
+          });
+          localStorage.removeItem("accessToken");
+          navigate("/auth")
+     
+          return;
+        }
         let videoData = [];
         if (category === 0) {
           const res = await getVideos(limit, pageNumber);
@@ -46,7 +59,6 @@ const Feed = ({ category }) => {
 
         setHasMore(videoData.length >= limit);
 
-      
         const updatedVideos = await Promise.all(
           videoData.map(async (video) => {
             try {
@@ -139,12 +151,7 @@ const Feed = ({ category }) => {
           >
             <div className="flex">
               <div>
-                <img
-                  src={video.more[1]}
-                  className="img-pro"
-                  
-                  alt="chn-img"
-                />
+                <img src={video.more[1]} className="img-pro" alt="chn-img" />
               </div>
               <div className="Width-det">
                 <h2 className="truncate">

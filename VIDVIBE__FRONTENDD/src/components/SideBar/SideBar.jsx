@@ -1,37 +1,35 @@
 import "./SideBar.css";
 import home from "../../assets/home.png";
-import sub from "../../assets/sub.png"
+import sub from "../../assets/sub.png";
 import user from "../../assets/user.png";
 import { useState, useEffect } from "react";
-
-import { useNavigate,Link } from "react-router-dom";
-import {
-  getUserId,
-  getSubscribedChannels,
-  
-} from "../../API/index.js";
+import { useSnackbar } from "notistack";
+import { useNavigate, Link } from "react-router-dom";
+import { getUserId, getSubscribedChannels } from "../../API/index.js";
 
 import useTheme from "../../contexts/theme.js";
 export const SideBar = ({ sideBar, category, setCategory }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [userData, setUserData] = useState([]);
-  const { themeMode} = useTheme();
+  const { themeMode } = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getUserId();
         const userList = await getSubscribedChannels(data?.data?.data?._id);
-        setUserData(userList?.data?.data?.subscribedChannels);    
+        setUserData(userList?.data?.data?.subscribedChannels);
       } catch (error) {
-        console.log("Error on Fetching Subscribed channel list!!!", error);
+        enqueueSnackbar("SomeThing went wrong,Please Login in again!", {
+          variant: "error",
+        });
+        navigate("/auth")
       }
     };
-    
+
     fetchData();
   }, []);
 
-  
-  
   return (
     <div
       className={`sidebar ${sideBar ? "" : "small-sidebar"} ${

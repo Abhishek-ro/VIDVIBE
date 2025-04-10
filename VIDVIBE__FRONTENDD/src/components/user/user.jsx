@@ -3,7 +3,6 @@ import UserData from "./UserData.jsx";
 import { SideBar } from "../../components/SideBar/SideBar.jsx";
 
 const User = ({ sideBar, category, setCategory }) => {
-
   return (
     <>
       <SideBar
@@ -11,9 +10,7 @@ const User = ({ sideBar, category, setCategory }) => {
         category={category}
         setCategory={setCategory}
       />
-      <div
-        className="user-container"
-      >
+      <div className="user-container">
         <div>
           <UserData />
         </div>

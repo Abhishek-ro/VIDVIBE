@@ -6,3 +6,12 @@ const { themeMode } = useTheme();
 
 
 color: #ababab;
+
+
+import { useSnackbar } from "notistack";
+
+const { enqueueSnackbar } = useSnackbar();
+
+enqueueSnackbar("Error fetching watch history videos:", {
+        variant: "error",
+      });

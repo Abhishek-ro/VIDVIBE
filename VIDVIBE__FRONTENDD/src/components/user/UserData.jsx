@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { getUserId, getYourVideos } from "../../API/index.js";
 import "./UserData.css";
 import useTheme from "../../contexts/theme.js";
-
+import { useSnackbar } from "notistack";
 const UserData = () => {
   const [userData, setUserData] = useState(null);
   const [vidLen, setVidLen] = useState(0);
   const { themeMode } = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -16,7 +17,9 @@ const UserData = () => {
 
         setUserData(data?.data?.data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        enqueueSnackbar("Error fetching user data", {
+          variant: "error",
+        });
       }
     };
 

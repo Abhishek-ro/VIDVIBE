@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { searchVideos } from "../../API/index.js";
 import useTheme from "../../contexts/theme.js";
+import { useSnackbar } from "notistack";
 import { formatDistanceToNow } from "date-fns";
 import "./SV.css";
 
@@ -10,7 +11,7 @@ function SearchResults() {
   const [videos, setVideos] = useState([]);
   const query = new URLSearchParams(location.search).get("query");
   const { themeMode } = useTheme();
-
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (!query) return;
 
@@ -20,7 +21,9 @@ function SearchResults() {
         console.log(response?.data?.data);
         setVideos(response?.data?.data);
       } catch (error) {
-        console.error("Error fetching videos:", error);
+        enqueueSnackbar("Error fetching videos", {
+        variant: "error",
+      });
       }
     };
 

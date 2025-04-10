@@ -7,17 +7,17 @@ const VerificationPage = () => {
   const navigate = useNavigate();
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationStatus, setVerificationStatus] = useState("");
-  const [email, setEmail] = useState(""); // To pass to the verification API
+  const [email, setEmail] = useState(""); 
 
   useEffect(() => {
-    // Retrieve the email (or another identifier) from local storage
+
     const storedEmail = localStorage.getItem("verificationEmail");
     if (storedEmail) {
       setEmail(storedEmail);
     } else {
-      // Handle case where email is not found (e.g., user navigated directly)
+
       enqueueSnackbar("No email found for verification.", { variant: "error" });
-      navigate("/register"); // Redirect back to register
+      navigate("/register"); 
     }
   }, [navigate, enqueueSnackbar]);
 
@@ -59,8 +59,7 @@ const VerificationPage = () => {
       return;
     }
     try {
-      // Implement your API call to resend the verification code
-      // const response = await resendVerificationCode({ email });
+      
       enqueueSnackbar("Verification code resent to your email.", {
         variant: "info",
       });

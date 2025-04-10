@@ -9,6 +9,7 @@ import DarkMode from "../../assets/darkmode.png";
 import { Link, useNavigate } from "react-router-dom";
 import Se_phone from "./Se_phone.jsx";
 import { useState, useEffect } from "react";
+import { useSnackbar } from "notistack";
 import {
   getUserId,
   changeUserPassword,
@@ -51,6 +52,7 @@ const NAV_HEADER = ({ setSideBar }) => {
   const [showSearchPhoneComponent, setShowSearchPhoneComponent] =
     useState(false);
   const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
 
   const { themeMode, darkTheme, lightTheme } = useTheme();
 
@@ -59,7 +61,13 @@ const NAV_HEADER = ({ setSideBar }) => {
       try {
         const response = await getUserId();
 
-        if (response.data.data.accessToken === null) return;
+        if (response.data.data.accessToken === null) {
+          enqueueSnackbar("User not found. Please log in again.", {
+            variant: "error",
+          });
+          navigate("/auth");
+          return
+        };
         setUserInfo(response.data.data || {});
         setOldFullName(response.data?.fullName || "");
       } catch (error) {
@@ -96,6 +104,14 @@ const NAV_HEADER = ({ setSideBar }) => {
     setLoading(true);
     try {
       const response = await changeUserPassword(oldPassword, newPassword);
+      if(!response){
+        enqueueSnackbar("You are unauthorized to change the password.Login Again!!!", {
+          variant: "error",
+        });
+        localStorage.removeItem("accessToken");
+        navigate("/auth")
+        return
+      }
       setMessage({ type: "success", text: response?.data?.message });
       setOldPassword("");
       setNewPassword("");
@@ -177,7 +193,15 @@ const NAV_HEADER = ({ setSideBar }) => {
         thumbnailUpload
       );
 
-      console.log("hehehehehehehehehehehehehehehe", response);
+      if(!response){
+        enqueueSnackbar("Something went wrong while uploading!!!", {
+          variant: "error",
+        });
+      }
+      
+
+
+     
 
       setMessage({ type: "success", text: "Avatar updated successfully!" });
       setShowForm(false);
@@ -206,9 +230,14 @@ const NAV_HEADER = ({ setSideBar }) => {
       const response = await updateUserCover(newCover);
 
       setUserInfo(response?.data?.data);
-
+      enqueueSnackbar("Avatar updated successfully!", {
+        variant: "success",
+      });
       setMessage({ type: "success", text: "Avatar updated successfully!" });
     } catch (error) {
+      enqueueSnackbar("Something went wrong!", {
+        variant: "error",
+      });
       setMessage({ type: "error", text: "Something went wrong!" });
     } finally {
       setLoading(false);
@@ -218,12 +247,16 @@ const NAV_HEADER = ({ setSideBar }) => {
   const handleLogout = async () => {
     try {
       setShowConfirmLogout(false);
-
       await logout();
       localStorage.setItem("accessToken", null);
+      enqueueSnackbar("Logged Out!", {
+        variant: "success",
+      });
       navigate("/auth");
     } catch (error) {
-      console.error("Logout failed:", error);
+      enqueueSnackbar("Something went wrong while logging out!", {
+        variant: "error",
+      });
     }
   };
   const handleUploadVideo = () => {
@@ -242,6 +275,9 @@ const NAV_HEADER = ({ setSideBar }) => {
       handle(searchQuery);
       navigate(`/video/search?query=${searchQuery}`);
     } catch (error) {
+      enqueueSnackbar("Something went wrong while Searching!", {
+        variant: "error",
+      });
       console.error("Search failed:", error);
     }
   };

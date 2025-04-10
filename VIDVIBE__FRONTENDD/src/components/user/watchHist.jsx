@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { getUserId, getUsernameById, watcheHistory } from "../../API/index.js";
 import { formatDistanceToNow } from "date-fns";
+import { useSnackbar } from "notistack";
 import useTheme from "../../contexts/theme.js";
 import "./watchHist.css";
 
@@ -10,6 +11,7 @@ const WatchHist = () => {
   const [channelInfoMap, setChannelInfoMap] = useState({});
   const [loading, setLoading] = useState(false);
   const { themeMode } = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
 
   const formatDuration = (duration) => {
     if (typeof duration !== "number" || duration < 0 || isNaN(duration)) {
@@ -27,12 +29,13 @@ const WatchHist = () => {
     try {
       const userDataRes = await getUserId();
       const userId = userDataRes?.data?.data?._id;
+      
       if (userId) {
         const videoRes = await watcheHistory();
         const videoData = videoRes?.data?.message?.history || [];
         setVideos(videoData);
-        console.log("heheh",videoData)
-        // Fetch channel info for all videos at once
+        console.log("hehehhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",videoData)
+      
         const channelIds = videoData
           .map((video) => video?.video?.owner)
           .filter(Boolean);
@@ -57,7 +60,9 @@ const WatchHist = () => {
         setChannelInfoMap(channelInfoMapResult);
       }
     } catch (error) {
-      console.error("Error fetching watch history videos:", error);
+      enqueueSnackbar("Error fetching watch history videos:", {
+        variant: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -84,6 +89,7 @@ const WatchHist = () => {
             className={`${themeMode === "dark" ? "cardD" : "card"}`}
             key={video._id}
           >
+            {console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", video)}
             <div className="thumbnail-container">
               <img
                 src={video.video?.thumbnail}
@@ -115,7 +121,6 @@ const WatchHist = () => {
                     {channelInfoMap[video?.video?.owner]?.username || "Unknown"}
                   </h3>
                   <p>
-                   
                     {video?.video?.views} views •{" "}
                     {formatDistanceToNow(new Date(video?.video.createdAt), {
                       addSuffix: true,

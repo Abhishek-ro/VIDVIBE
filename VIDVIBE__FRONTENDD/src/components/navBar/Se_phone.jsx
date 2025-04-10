@@ -1,13 +1,13 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Se_phone.css";
 import useTheme from "../../contexts/theme.js";
-
+import { useSnackbar } from "notistack";
 function Se_phone({ onClose }) {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const { themeMode } = useTheme();
-
+  const { enqueueSnackbar } = useSnackbar();
   const handleBack = () => {
     navigate(-1);
     if (onClose) onClose();
@@ -23,9 +23,11 @@ function Se_phone({ onClose }) {
 
     try {
       navigate(`/video/search?query=${encodeURIComponent(trimmedQuery)}`);
-      if (onClose) onClose(); // Close search UI (if it's modal/overlay-based)
+      if (onClose) onClose(); 
     } catch (error) {
-      console.error("Search failed:", error);
+      enqueueSnackbar("Search failed!!!", {
+        variant: "error",
+      });
     }
   };
 

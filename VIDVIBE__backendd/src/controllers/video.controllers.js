@@ -24,7 +24,12 @@ const getAllVideos = asyncHandler(async (req, res) => {
       .sort({ [sortBy]: sortType === "asc" ? 1 : -1 })
       .skip(parseInt(offset))
       .limit(parseInt(limit));
-
+      if (!videos) {
+        return res.status(404).json({
+          success: false,
+          message: "No videos found",
+        });
+      }
     const totalVideos = await Video.countDocuments();
     res.status(200).json({
       success: true,

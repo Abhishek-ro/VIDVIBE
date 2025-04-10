@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+
 import {
   getSubscribedVideos,
   getUserId,
@@ -13,9 +15,10 @@ const SubscribedFeed = ({ sideBar, category, setCategory }) => {
   const [videos, setVideos] = useState([]);
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const { themeMode } = useTheme();
-
+  const navigate = useNavigate();
   const formatDuration = (duration) => {
     if (!duration || isNaN(duration)) return "0:00";
 
@@ -29,6 +32,14 @@ const SubscribedFeed = ({ sideBar, category, setCategory }) => {
     setLoading(true);
     try {
       const userData = await getUserId();
+      if (!userData?.data?.data) {
+        enqueueSnackbar("User not found. Please log in again.", {
+          variant: "error",
+        });
+        navigate("/auth");
+        localStorage.removeItem("accessToken");
+        return;
+      }
       setUserInfo(userData?.data?.data);
 
       const subRes = await getSubscribedVideos(userData?.data?.data?._id);

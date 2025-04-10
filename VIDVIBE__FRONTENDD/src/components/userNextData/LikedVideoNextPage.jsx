@@ -3,28 +3,30 @@ import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { likedVideos, getUsernameById } from "../../API/index.js";
 import "./LikedVideoNextPage.css";
+import { useSnackbar } from "notistack";
 
 const LikedVideoNextPage = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     const fetchLikedVideos = async () => {
       setLoading(true);
       try {
-        const response = await likedVideos(); 
-       
+        const response = await likedVideos();
+
         let videoData = response?.data?.data || [];
-        console.log(videoData)
-        // Fetch usernames one by one (synchronously)
+        console.log(videoData);
+
         for (let video of videoData) {
-          console.log(video?.video?.username)
-          
+          console.log(video?.video?.username);
         }
 
         setVideos(videoData);
       } catch (error) {
-        console.error("Error fetching liked videos:", error);
+        enqueueSnackbar("Error fetching liked videos", {
+          variant: "error",
+        });
       } finally {
         setLoading(false);
       }

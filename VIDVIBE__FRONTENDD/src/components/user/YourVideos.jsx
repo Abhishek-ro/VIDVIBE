@@ -8,6 +8,7 @@ import {
   toggleVideoVisibility,
   deleteVideo,
 } from "../../API/index.js";
+import { useSnackbar } from "notistack";
 import { formatDistanceToNow } from "date-fns";
 import useTheme from "../../contexts/theme.js";
 import "./YourVideos.css";
@@ -22,22 +23,23 @@ const YourVideos = () => {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showToggleConfirm, setShowToggleConfirm] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
   const [updateDetails, setUpdateDetails] = useState({
     id: "",
     title: "",
     description: "",
     thumbnail: null,
   });
-const formatDuration = (duration) => {
-  if (typeof duration !== "number" || duration < 0 || isNaN(duration)) {
-    return "0:00";
-  }
+  const formatDuration = (duration) => {
+    if (typeof duration !== "number" || duration < 0 || isNaN(duration)) {
+      return "0:00";
+    }
 
-  const minutes = Math.floor(duration / 60);
-  const seconds = Math.floor(duration % 60);
+    const minutes = Math.floor(duration / 60);
+    const seconds = Math.floor(duration % 60);
 
-  return `${minutes}:${String(seconds).padStart(2, "0")}`;
-};
+    return `${minutes}:${String(seconds).padStart(2, "0")}`;
+  };
 
   const fetchVideos = useCallback(async () => {
     setLoading(true);
@@ -52,7 +54,9 @@ const formatDuration = (duration) => {
         setVideos(videoData);
       }
     } catch (error) {
-      console.error("Error fetching videos:", error);
+      enqueueSnackbar("Error fetching videos:", {
+        variant: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -83,8 +87,9 @@ const formatDuration = (duration) => {
       setShowUpdateForm(false);
       fetchVideos();
     } catch (error) {
-      console.error("Error updating video:", error);
-      alert("Failed to update video.");
+      enqueueSnackbar("Failed to update video.", {
+        variant: "error",
+      });
     }
   };
 
@@ -106,8 +111,9 @@ const formatDuration = (duration) => {
       alert("Video publish status updated!");
       fetchVideos();
     } catch (error) {
-      console.error("Error toggling video status:", error);
-      alert("Failed to toggle video status.");
+      enqueueSnackbar("Failed to toggle video status.", {
+        variant: "error",
+      });
     }
   };
 
@@ -130,11 +136,14 @@ const formatDuration = (duration) => {
       );
 
       setShowDeleteConfirm(null);
-      alert("Video deleted successfully!");
+      enqueueSnackbar("Video Deleted Successfull", {
+        variant: "success",
+      });
       fetchVideos();
     } catch (error) {
-      console.error("Error deleting video:", error);
-      alert("Failed to delete video.");
+      enqueueSnackbar("Failed to delete video.", {
+        variant: "error",
+      });
     }
   };
 

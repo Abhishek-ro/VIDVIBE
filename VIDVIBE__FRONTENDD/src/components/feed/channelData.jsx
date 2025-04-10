@@ -2,6 +2,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { getChannelVideos } from "../../API/index.js";
+import { useSnackbar } from "notistack";
+
+
 import "./Feed.css";
 import useTheme from "../../contexts/theme.js";
 import Loader from "../Loader/Loader.jsx";
@@ -15,6 +18,7 @@ const ChannelData = () => {
   const observerRef = useRef(null);
   const limit = 16;
   const { themeMode } = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
 
 
   const formatDuration = (duration) => {
@@ -34,10 +38,19 @@ const ChannelData = () => {
       }
       try {
         const dataSub = await getChannelVideos(channelId);
+        
+
         const dataChannel = dataSub?.data?.data?.videos;
+        
         if (!dataChannel || dataChannel.length === 0) {
+          enqueueSnackbar("No videos found in this channel.", {
+            variant: "warning",
+          });
           setHasMore(false);
         } else {
+          enqueueSnackbar("Videos loaded successfully!", {
+            variant: "success",
+          });
           setHasMore(dataChannel.length >= limit);
         }
 

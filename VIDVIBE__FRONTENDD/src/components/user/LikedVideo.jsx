@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getUserId, likedVideos, getUsernameById } from "../../API/index.js";
 import { formatDistanceToNow } from "date-fns";
 import useTheme from "../../contexts/theme.js";
+import { useSnackbar } from "notistack";
 import "./LikedVideo.css";
 
 const LikedVideo = () => {
@@ -10,7 +11,7 @@ const LikedVideo = () => {
   const [channelInfoMap, setChannelInfoMap] = useState({});
   const [loading, setLoading] = useState(false);
   const { themeMode } = useTheme();
-
+  const { enqueueSnackbar } = useSnackbar();
   const formatDuration = (duration) => {
     if (typeof duration !== "number" || duration < 0 || isNaN(duration)) {
       return "0:00";
@@ -32,7 +33,6 @@ const LikedVideo = () => {
         const videoData = videoRes?.data?.data || [];
         setVideos(videoData);
 
-      
         const channelIds = videoData
           .map((video) => video?.video?.owner)
           .filter(Boolean);
@@ -53,7 +53,9 @@ const LikedVideo = () => {
         setChannelInfoMap(channelInfoMapResult);
       }
     } catch (error) {
-      console.error("Error fetching videos:", error);
+      enqueueSnackbar("Error fetching videos", {
+          variant: "error",
+        });
     } finally {
       setLoading(false);
     }

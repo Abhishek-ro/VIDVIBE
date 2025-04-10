@@ -1,5 +1,6 @@
-import { useEffect, useState ,useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import {
   getUserId,
   getVideoById,
@@ -61,7 +62,9 @@ export const PlayVideo = () => {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedCommentText, setEditedCommentText] = useState("");
+  const navigate = useNavigate();
 
+  const { enqueueSnackbar } = useSnackbar();
   const { themeMode } = useTheme();
   useEffect(() => {
     const fetchVideo = async () => {
@@ -94,7 +97,9 @@ export const PlayVideo = () => {
 
         loadComments(0);
       } catch (error) {
-        console.error("Error fetching video:", error);
+        enqueueSnackbar("Something Went wrong!!", {
+          variant: "error",
+        });
       }
     };
 
@@ -108,39 +113,45 @@ export const PlayVideo = () => {
       setIsSubscribed((prev) => !prev);
       setTotalSub((prev) => (isSubscribed ? prev - 1 : prev + 1));
     } catch (error) {
-      console.error("Error toggling subscription:", error);
+      enqueueSnackbar("Error toggling subscription", {
+          variant: "error",
+        });
     }
   };
 
- const loadComments = useCallback(
-   async (page) => {
-     if (loading || !hasMore) return;
-     setLoading(true);
+  const loadComments = useCallback(
+    async (page) => {
+      if (loading || !hasMore) return;
+      setLoading(true);
 
-     try {
-       const res = await allComments(videoId, page, 5);
-       const newComments = res?.data?.comments || [];
+      try {
+        const res = await allComments(videoId, page, 5);
+        const newComments = res?.data?.comments || [];
 
-       if (newComments.length === 0) {
-         setHasMore(false);
-       } else {
-         setAllComment((prev) => [...prev, ...newComments]);
-       }
-     } catch (error) {
-       console.error("Error fetching comments:", error);
-     }
+        if (newComments.length === 0) {
+          setHasMore(false);
+        } else {
+          setAllComment((prev) => [...prev, ...newComments]);
+        }
+      } catch (error) {
+        enqueueSnackbar("Error fetching comments!!!", {
+          variant: "error",
+        });
+      }
 
-     setLoading(false);
-   },
-   [loading, hasMore, videoId]
- );
+      setLoading(false);
+    },
+    [loading, hasMore, videoId]
+  );
   useEffect(() => {
     const fetchTotalComments = async () => {
       try {
         const total = await totalCommentNumber(videoId);
         setTotalCountOfComment(total.data.comments);
       } catch (error) {
-        console.error("Error fetching total comments:", error);
+        enqueueSnackbar("Error fetching total comments", {
+          variant: "error",
+        });
       }
     };
     fetchTotalComments();
@@ -161,11 +172,11 @@ export const PlayVideo = () => {
           : Math.max(0, prev - 1)
       );
     } catch (error) {
-      console.error("Error toggling like:", error);
+      enqueueSnackbar("Error toggling like", {
+          variant: "error",
+        });
     }
   };
-
-
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
@@ -177,7 +188,9 @@ export const PlayVideo = () => {
       }
       setCommentText("");
     } catch (error) {
-      console.error("Error adding comment:", error);
+      enqueueSnackbar("Error adding comment", {
+          variant: "error",
+        });
     }
   };
   useEffect(() => {
@@ -186,10 +199,12 @@ export const PlayVideo = () => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      await deleteComment(commentId)
-      setOpenMenuId(false)
+      await deleteComment(commentId);
+      setOpenMenuId(false);
     } catch (error) {
-      console.error("Error deleting comment:", error);
+      enqueueSnackbar("Error deleting comment", {
+          variant: "error",
+        });
     }
   };
 
@@ -197,7 +212,7 @@ export const PlayVideo = () => {
     try {
       console.log(commentId);
       const res = await updateComments(commentId, editedCommentText);
-      console.log(res)
+      console.log(res);
       setAllComment((prev) =>
         prev.map((c) =>
           c._id === commentId ? { ...c, content: editedCommentText } : c
@@ -205,10 +220,11 @@ export const PlayVideo = () => {
       );
       setEditingCommentId(null);
     } catch (error) {
-      console.error("Error editing comment:", error);
+      enqueueSnackbar("Something went wrong while updating comment!!!", {
+        variant: "error",
+      });
     }
   };
-
 
   if (!video || !channel) return <p>Loading...</p>;
 

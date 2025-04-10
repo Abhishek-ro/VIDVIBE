@@ -12,7 +12,8 @@ const api = axios.create({
 export const getVideos = async (offset = 0, limit = 8) => {
   const token = localStorage.getItem("token");
   console.log("token", token);
-  return api.get("http://localhost:5003/api/v1/video/get-all", {
+  // eslint-disable-next-line no-undef
+  return api.get(`${process.env.VITE_BACKEND_URL}/api/v1/video/get-all`, {
     params: { offset, limit },
     headers: {
       Authorization: `Bearer ${token}`,
