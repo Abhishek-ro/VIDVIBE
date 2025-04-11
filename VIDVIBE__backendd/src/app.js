@@ -29,7 +29,7 @@ app.use(
 
 app.use(
   cors({
-    origin: process.env.CORS || "https://vidvibe-backend.onrender.com",
+    origin: process.env.CORS || "https://vidvibe.onrender.com",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
